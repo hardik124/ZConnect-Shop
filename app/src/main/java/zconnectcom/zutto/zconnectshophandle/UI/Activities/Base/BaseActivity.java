@@ -1,7 +1,9 @@
 package zconnectcom.zutto.zconnectshophandle.UI.Activities.Base;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -38,6 +40,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseActi
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
             getWindow().setStatusBarColor(colorPrimary);
             getWindow().setNavigationBarColor(colorPrimary);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -100,18 +104,24 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseActi
 
     public void showSnack(String message, int length)
     {
-        Snackbar snack = Snackbar.make(getCurrentFocus(), message, length);
-        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-        snackBarText.setTextColor(Color.WHITE);
-        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-        snack.show();
+        try {
+            Snackbar snack = Snackbar.make(getCurrentFocus(), message, length);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+            snack.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
-    public void showSnack(String message)
+    public boolean showSnack(String message)
     {
         showSnack(message,Snackbar.LENGTH_LONG);
+        return true;
     }
+
 
     public void showProgressDialog() {
         showProgressDialog(getString(R.string.working));
@@ -137,7 +147,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseActi
     }
 
     public void setActionBarTitle(String title) {
-        if (getSupportActionBar() != null && getTitle() != null) {
+        if (getSupportActionBar() != null) {
             setTitle(title);
         }
     }
@@ -154,4 +164,17 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseActi
     public void setToolbarTitle(String title) {
         setActionBarTitle(title);
     }
+
+    public boolean isNetworkAvailable(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        if (!(connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected())) {
+            showSnack("No internet available", Snackbar.LENGTH_INDEFINITE);
+            hideProgressDialog();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
 }

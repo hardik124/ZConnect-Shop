@@ -11,12 +11,17 @@
         android:id="@+id/offerImage"
         android:layout_width="match_parent"
         android:layout_height="228dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="20dp"
+        android:background="@drawable/border"
         android:paddingBottom="15dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="10dp"
+        android:scaleType="fitXY"
         app:srcCompat="@mipmap/ic_add_a_photo_black_24dp" />
+
 
     <EditText
         android:id="@+id/offerName"
@@ -25,8 +30,9 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="15dp"
+        android:background="@drawable/border"
         android:hint="Coupon Title"
-        android:paddingLeft="5dp"
+        android:paddingLeft="10dp"
         android:paddingRight="5dp"
         android:textSize="25sp" />
 
@@ -37,10 +43,12 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="15dp"
+        android:background="@drawable/border"
         android:hint="Description"
-        android:paddingLeft="5dp"
+        android:paddingLeft="10dp"
         android:paddingRight="5dp"
-        android:textSize="15sp" />
+
+        android:textSize="25sp" />
 
     <EditText
         android:id="@+id/offerCode"
@@ -49,9 +57,11 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="15dp"
+        android:background="@drawable/border"
         android:hint="Coupon code"
-        android:paddingLeft="5dp"
+        android:paddingLeft="10dp"
         android:paddingRight="5dp"
+
         android:textColor="@color/colorPrimaryDark"
         android:textSize="45sp" />
 

@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -19,7 +18,6 @@ import java.util.TimerTask;
 
 import zconnectcom.zutto.zconnectshophandle.R;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Base.BaseActivity;
-import zconnectcom.zutto.zconnectshophandle.UI.Activities.Shop.AddCoupon;
 
 
 public class logoFlash extends BaseActivity {
@@ -90,7 +88,7 @@ public class logoFlash extends BaseActivity {
     void openHome() {
         new Timer().schedule(new TimerTask() {
             public void run() {
-                Intent intent = new Intent(logoFlash.this, AddCoupon.class);
+                Intent intent = new Intent(logoFlash.this, logIn.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();

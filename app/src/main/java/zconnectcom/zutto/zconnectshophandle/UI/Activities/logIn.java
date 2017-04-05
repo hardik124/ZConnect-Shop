@@ -1,14 +1,16 @@
 package zconnectcom.zutto.zconnectshophandle.UI.Activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -17,11 +19,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import zconnectcom.zutto.zconnectshophandle.R;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Base.BaseActivity;
-import zconnectcom.zutto.zconnectshophandle.UI.Activities.Shop.home;
+import zconnectcom.zutto.zconnectshophandle.UI.Activities.Coupons.home;
 
 public class logIn extends BaseActivity {
 
-    private static final String TAG = "EmailPassword";
     private EditText shopCode;
     private Button logInButton;
     private DatabaseReference mDatabaseUsers;
@@ -35,55 +36,57 @@ public class logIn extends BaseActivity {
 
         logInButton = (Button) findViewById(R.id.login);
         shopCode = (EditText) findViewById(R.id.shopcode);
-        mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Shopskeepers");
+        mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Shops/Shopkeepers");
         mDatabaseUsers.keepSynced(true);
 
         logInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (!isNetworkAvailable(getApplicationContext())) {
-                    showSnack("No internet available",Snackbar.LENGTH_INDEFINITE);
-                } else {
+                if (isNetworkAvailable(logIn.this))
                     showProgressDialog();
-                    checkUser(shopCode.getText().toString());
-                }
+                checkUser(shopCode.getText().toString());
 
             }
         });}
 
 
 
-
-
-public boolean isNetworkAvailable(final Context context) {
-    final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
-    return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
-}
-
-
-
     private void checkUser(final String code) {
-            mDatabaseUsers.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    if (dataSnapshot.hasChild(code)) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth.signInWithEmailAndPassword(getString(R.string.emailId), getString(R.string.password)).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(final DataSnapshot dataSnapshot) {
+                            //Auth
+                            if (dataSnapshot.hasChild(code)) {
+                                Intent loginIntent = new Intent(logIn.this, home.class);
+                                loginIntent.putExtra("ShopKey", dataSnapshot.child(code).child("Key").getValue().toString());
+                                loginIntent.putExtra("ShopName", (dataSnapshot.child(code).child("Name").getValue()).toString());
+                                loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                hideProgressDialog();
+                                startActivity(loginIntent);
+                            } else
+                                showSnack("Unable to find user , contact ZConnect");
                         hideProgressDialog();
-                        Intent loginIntent = new Intent(logIn.this, home.class);
-                        loginIntent.putExtra("ShopKey", (CharSequence) dataSnapshot.child(code).child("Key").getValue());
-                        loginIntent.putExtra("ShopName",(CharSequence) dataSnapshot.child(code).child("Name").getValue());
-                        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(loginIntent);
+                        }
 
-                    }
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            showSnack("Unable to connect , retry again.");
+                            showSnack(databaseError.toString());
+                            hideProgressDialog();
+                        }
+                    });
+                } else
+                    showSnack("Unable to connect , retry again.");
+                hideProgressDialog();
+            }
+        });
     }
+
+
 }
