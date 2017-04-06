@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import zconnectcom.zutto.zconnectshophandle.R;
@@ -43,8 +44,18 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setImage(String url) {
-        Picasso.with(mView.getContext()).load(url).into((ImageView) mView.findViewById(R.id.imgDisplay));
-        mDel.setVisibility(View.VISIBLE);
+        Picasso.with(mView.getContext()).load(url).into((ImageView) mView.findViewById(R.id.imgDisplay), new Callback() {
+            @Override
+            public void onSuccess() {
+                mDel.setVisibility(View.VISIBLE);
+
+            }
+
+            @Override
+            public void onError() {
+                
+            }
+        });
     }
 
 }
