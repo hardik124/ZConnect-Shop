@@ -97,6 +97,7 @@ public class AddCoupon extends BaseActivity {
     void initViews() {
         mPost = (Button) findViewById(R.id.postCoupon);
         mImage = (ImageView) findViewById(R.id.offerImage);
+        mImage.setImageResource(R.drawable.addimage);
         etName = (EditText) findViewById(R.id.offerName);
         etDesc = (EditText) findViewById(R.id.offerDesc);
         etCode = (EditText) findViewById(R.id.offerCode);

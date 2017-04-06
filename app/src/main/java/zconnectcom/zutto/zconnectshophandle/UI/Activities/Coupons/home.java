@@ -1,6 +1,11 @@
 package zconnectcom.zutto.zconnectshophandle.UI.Activities.Coupons;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -22,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import zconnectcom.zutto.zconnectshophandle.R;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.AboutUs;
@@ -202,6 +208,23 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Picasso.with(getApplicationContext()).load((String) dataSnapshot.child("imageurl").getValue()).into((ImageView) findViewById(R.id.UserPic));
+                Picasso.with(getApplicationContext()).load((String) dataSnapshot.child("imageurl").getValue()).into(new Target() {
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        findViewById(R.id.navHeader).setBackground(new BitmapDrawable(getApplicationContext().getResources(), bitmap));
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                });
                 ((TextView) findViewById(R.id.userName)).setText((String) dataSnapshot.child("name").getValue());
             }
 

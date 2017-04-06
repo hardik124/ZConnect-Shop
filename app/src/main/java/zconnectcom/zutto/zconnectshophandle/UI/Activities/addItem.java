@@ -68,6 +68,7 @@ public class addItem extends BaseActivity {
         });
 
         done = (Button) findViewById(R.id.btnDel);
+        done.setVisibility(View.VISIBLE);
         done.setText("Add");
         done.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -44,6 +44,7 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
 
     public void setImage(String url) {
         Picasso.with(mView.getContext()).load(url).into((ImageView) mView.findViewById(R.id.imgDisplay));
+        mDel.setVisibility(View.VISIBLE);
     }
 
 }
