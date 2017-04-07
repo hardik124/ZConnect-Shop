@@ -77,7 +77,7 @@
 
         </View>
 
-        <ImageView
+        <zconnectcom.zutto.zconnectshophandle.Utils.CircularImageView
             android:id="@+id/UserPic"
             android:layout_width="80dp"
             android:layout_height="match_parent"
