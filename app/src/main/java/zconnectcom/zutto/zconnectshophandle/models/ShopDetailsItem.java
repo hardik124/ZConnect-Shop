@@ -1,22 +1,18 @@
 package zconnectcom.zutto.zconnectshophandle.models;
 
-/**
- * Created by shubhamk on 8/2/17.
- */
-
 public class ShopDetailsItem {
     String name;
     String number;
     String imageurl;
-    String lat;
+    Double lat;
     String details;
-    String lon;
+    Double lon;
     String menuurl;
     String cat;
-    String shopid;
+    String shopid, address, code;
 
 
-    public ShopDetailsItem(String name, String shopid, String number, String imageurl, String lat, String details, String lon, String menuurl, String cat) {
+    public ShopDetailsItem(String name, String code, String shopid, String number, String imageurl, Double lat, String details, Double lon, String menuurl, String cat, String address) {
         this.name = name;
         this.number = number;
         this.imageurl = imageurl;
@@ -26,6 +22,8 @@ public class ShopDetailsItem {
         this.menuurl = menuurl;
         this.cat = cat;
         this.shopid = shopid;
+        this.address = address;
+        this.code = code;
     }
 
 
@@ -34,10 +32,6 @@ public class ShopDetailsItem {
 
     public String getShopid() {
         return shopid;
-    }
-
-    public void setShopid(String Gallery) {
-        this.shopid = shopid;
     }
 
     public String getCat() {
@@ -66,12 +60,9 @@ public class ShopDetailsItem {
 
     public String getLon() {
 
-        return lon;
+        return lon.toString();
     }
 
-    public void setLon(String lon) {
-        this.lon = lon;
-    }
 
     public String getDetails() {
 
@@ -84,11 +75,7 @@ public class ShopDetailsItem {
 
     public String getLat() {
 
-        return lat;
-    }
-
-    public void setLat(String lat) {
-        this.lat = lat;
+        return lat.toString();
     }
 
     public String getNumber() {
@@ -108,5 +95,15 @@ public class ShopDetailsItem {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getCode() {
+
+        return code;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
 }
 

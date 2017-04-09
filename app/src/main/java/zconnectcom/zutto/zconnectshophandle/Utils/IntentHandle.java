@@ -11,11 +11,6 @@ import android.provider.MediaStore;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by f390 on 4/4/17.
- */
-
 public class IntentHandle {
 
 
@@ -64,8 +59,8 @@ public class IntentHandle {
         return isCamera ? getCaptureImageOutputUri() : data.getData();
     }
 
-    public Uri getCaptureImageOutputUri() {
-        Uri outputFileUri = null;
+    private Uri getCaptureImageOutputUri() {
+        Uri outputFileUri;
         // File getImage = getExternalCacheDir();
         // if (getImage != null) {
         outputFileUri = Uri.fromFile(new File(

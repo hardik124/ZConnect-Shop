@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,15 +26,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import zconnectcom.zutto.zconnectshophandle.R;
-import zconnectcom.zutto.zconnectshophandle.UI.Activities.AboutUs;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Base.BaseActivity;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Gallery.ShopGallery;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Menu.ShopMenu;
+import zconnectcom.zutto.zconnectshophandle.UI.Activities.Misc.AboutUs;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.ShopDetails.ShopDetails;
 import zconnectcom.zutto.zconnectshophandle.ViewHolder.CouponViewHolder;
 import zconnectcom.zutto.zconnectshophandle.models.Coupon;
@@ -41,7 +43,7 @@ import zconnectcom.zutto.zconnectshophandle.models.Coupon;
 public class home extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     RecyclerView mCouponList;
-    DatabaseReference mCoupons;
+    Query mCoupons;
     Bundle extras ;
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
@@ -60,8 +62,8 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
         super.onStart();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
-        toolbar.setTitle(extras.getString("ShopName"));
-        setActionBarTitle(extras.getString("ShopName"));
+        toolbar.setTitle("Offers");
+        setActionBarTitle("Offers");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +94,7 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
     }
 
     void initRV() {
-        mCoupons = FirebaseDatabase.getInstance().getReference("Shops/Coupons").child(extras.getString("ShopName"));
+        mCoupons = FirebaseDatabase.getInstance().getReference("Shop/Offers").orderByChild("ShopKey").equalTo(extras.getString("ShopKey"));
         mCouponList = (RecyclerView) findViewById(R.id.couponList);
         mCouponList.setHasFixedSize(true);
         mCoupons.keepSynced(true);
@@ -118,10 +120,11 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
                 viewHolder.setData(extras.getString("ShopName"));
                 viewHolder.setDelButton(model.getKey());
                 viewHolder.setEditButton(model);
-                viewHolder.setCode(model.getCode());
                 viewHolder.setImage(model.getImage());
                 viewHolder.setTitle(model.getName());
                 viewHolder.setDesc(model.getDesc());
+
+                Log.d("data_offers ", model.toString());
             }
         };mCouponList.setAdapter(firebaseRecyclerAdapter);
     }

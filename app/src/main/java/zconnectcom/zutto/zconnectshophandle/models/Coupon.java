@@ -2,13 +2,9 @@ package zconnectcom.zutto.zconnectshophandle.models;
 
 import java.io.Serializable;
 
-/**
- * Created by f390 on 3/4/17.
- */
-
 public class Coupon implements Serializable {
 
-    String image , name , desc ,code ,key;
+    String image, name, desc, code, key;
 
 
     public Coupon(String image, String name, String desc, String code, String key) {
@@ -20,6 +16,7 @@ public class Coupon implements Serializable {
     }
 
     public Coupon() {
+
     }
 
     public String getImage() {

@@ -7,15 +7,11 @@ import zconnectcom.zutto.zconnectshophandle.R;
 import zconnectcom.zutto.zconnectshophandle.ViewHolder.ImageViewHolder;
 import zconnectcom.zutto.zconnectshophandle.models.GalleryFormat;
 
-/**
- * Created by f390 on 5/4/17.
- */
 
 public class FirebaseRVAdapter {
 
-    String type;
-    DatabaseReference mMenu;
-    String key;
+    private String type, key;
+    private DatabaseReference mMenu;
 
     public FirebaseRVAdapter(String type, DatabaseReference mMenu, String key) {
         this.type = type;
@@ -24,7 +20,7 @@ public class FirebaseRVAdapter {
     }
 
     public FirebaseRecyclerAdapter<GalleryFormat, ImageViewHolder> showImage() {
-        FirebaseRecyclerAdapter<GalleryFormat, ImageViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<GalleryFormat, ImageViewHolder>(
+        return new FirebaseRecyclerAdapter<GalleryFormat, ImageViewHolder>(
 
                 GalleryFormat.class,
                 R.layout.layout_fullscreen_image,
@@ -36,8 +32,8 @@ public class FirebaseRVAdapter {
                 viewHolder.setData(key, type);
                 viewHolder.setDelButton(model.getKey());
                 viewHolder.setImage(model.getImage());
+
             }
         };
-        return firebaseRecyclerAdapter;
     }
 }

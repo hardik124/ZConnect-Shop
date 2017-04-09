@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".UI.Activities.logoFlash">
+        <activity android:name=".UI.Activities.Misc.logoFlash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,7 +26,7 @@
             android:label="Coupon"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".UI.Activities.AboutUs"
+            android:name=".UI.Activities.Misc.AboutUs"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -35,7 +35,7 @@
             android:value="zconnectcom.zutto.zconnectshophandle.UI.Activities.Coupons.home" />
 
         <activity
-            android:name=".UI.Activities.logIn"
+            android:name=".UI.Activities.Misc.logIn"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -57,7 +57,8 @@
                 android:value="zconnectcom.zutto.zconnectshophandle.UI.Activities.Coupons.home" />
         </activity>
 
-        <activity.........
+
+        <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
 
@@ -83,7 +84,7 @@
         </activity>
 
         <activity
-            android:name=".UI.Activities.addItem"
+            android:name=".UI.Activities.AddItem.addItem"
             android:label="@string/title_activity_add_menu_item"
             android:parentActivityName=".UI.Activities.Coupons.home"
             android:theme="@style/AppTheme.NoActionBar">
@@ -91,6 +92,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="zconnectcom.zutto.zconnectshophandle.UI.Activities.Coupons.home" />
         </activity>
+
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBJUWO87nNIQgPKzGPIRfMh82KDSf4l4SU" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
     </application>
 
 </manifest>

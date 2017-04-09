@@ -1,4 +1,4 @@
-package zconnectcom.zutto.zconnectshophandle.UI.Activities;
+package zconnectcom.zutto.zconnectshophandle.UI.Activities.Misc;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,7 +36,7 @@ public class logIn extends BaseActivity {
 
         logInButton = (Button) findViewById(R.id.login);
         shopCode = (EditText) findViewById(R.id.shopcode);
-        mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Shops/Shopkeepers");
+        mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Shop/Shopkeepers");
         mDatabaseUsers.keepSynced(true);
 
         logInButton.setOnClickListener(new View.OnClickListener() {

@@ -1,4 +1,4 @@
-package zconnectcom.zutto.zconnectshophandle.UI.Activities;
+package zconnectcom.zutto.zconnectshophandle.UI.Activities.Misc;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;

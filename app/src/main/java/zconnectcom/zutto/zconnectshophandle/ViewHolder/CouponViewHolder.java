@@ -14,7 +14,7 @@ import zconnectcom.zutto.zconnectshophandle.UI.Activities.Coupons.AddCoupon;
 import zconnectcom.zutto.zconnectshophandle.models.Coupon;
 
 public class CouponViewHolder extends RecyclerView.ViewHolder {
-    ImageView mDel , mEdit;
+    ImageView mDel, mEdit;
     View mView;
     String shopName;
 
@@ -48,7 +48,7 @@ public class CouponViewHolder extends RecyclerView.ViewHolder {
         mDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseDatabase.getInstance().getReference("Shops/Coupons").child(shopName).child(couponkey).removeValue();
+                FirebaseDatabase.getInstance().getReference("Shop/Offers").child(couponkey).removeValue();
             }
         });
     }
@@ -62,13 +62,6 @@ public class CouponViewHolder extends RecyclerView.ViewHolder {
         EditText text = ((EditText) mView.findViewById(R.id.offerName));
         text.setEnabled(false);
         text.setText(title);
-    }
-
-    public void setCode(String code)
-    {
-        EditText text =((EditText) mView.findViewById(R.id.offerCode));
-        text.setText(code);
-        text.setEnabled(false);
     }
 
     public void setDesc(String desc)
