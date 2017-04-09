@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,32 +39,23 @@ public class AddCoupon extends BaseActivity {
     IntentHandle intentHandle;
     Button mPost;
     String key;
-    EditText etName, etDesc, etCode;
+    EditText etName, etDesc;
     Boolean changeImage = false;
-    private Uri mImageUri = null;
+    Uri mImageUri = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_coupon);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         extras = getIntent().getExtras();
+        setToolbar();
 
-        if (toolbar != null) {
-            toolbar.setNavigationOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            onBackPressed();
-                        }
-                    });
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(R.string.title_activity_add_coupon);
-        }
         initViews();
+        getSupportActionBar().setTitle(R.string.title_activity_add_coupon);
+        showBackButton();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         extras = getIntent().getExtras();
         ImageViewClickListener();
         checkType();
@@ -100,7 +90,6 @@ public class AddCoupon extends BaseActivity {
         mImage.setImageResource(R.drawable.addimage);
         etName = (EditText) findViewById(R.id.offerName);
         etDesc = (EditText) findViewById(R.id.offerDesc);
-        etCode = (EditText) findViewById(R.id.offerCode);
     }
 
 
@@ -140,6 +129,7 @@ public class AddCoupon extends BaseActivity {
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
+                showSnack(error.getMessage());
             }
         }
 
@@ -149,18 +139,17 @@ public class AddCoupon extends BaseActivity {
     void onClickPost() {
         final String cName = etName.getText().toString();
         final String cDesc = etDesc.getText().toString();
-        final String cCode = etCode.getText().toString();
 
-        if (cName == null || cDesc == null || cCode == null) {
+        if (cName.length() == 0 || cDesc.length() == 0) {
             showSnack("One or more fields are empty.");
             return;
         }
-        if (mImageUri == null && !extras.containsKey("Coupons")) {
+        if (mImageUri == null && (!extras.containsKey("Coupons"))) {
             Snackbar snack = Snackbar.make(mPost, "Image not selected ! Do you wish to continue?", Snackbar.LENGTH_INDEFINITE);
             snack.setAction("Yes", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    postCoupon(cName, cDesc, cCode);
+                    postCoupon(cName, cDesc);
                 }
             });
 
@@ -169,13 +158,12 @@ public class AddCoupon extends BaseActivity {
             snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
             snack.show();
         } else
-            postCoupon(cName, cDesc, cCode);
+            postCoupon(cName, cDesc);
 
     }
 
-    void postCoupon(final String cName, final String cDesc, final String cCode) {
+    void postCoupon(final String cName, final String cDesc) {
         showProgressDialog();
-        final String[] imageUrl = new String[1];
         if (mImageUri != null) {
             if (extras.containsKey("Coupons")) {
                 if (changeImage) {
@@ -185,12 +173,13 @@ public class AddCoupon extends BaseActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             String imageUrl = taskSnapshot.getDownloadUrl().toString();
-                            setData(cName, cDesc, cCode, imageUrl);
+                            setData(cName, cDesc, imageUrl);
 
                         }
                     });
                 } else {
-                    imageUrl[0] = ((Coupon) extras.get("Coupon")).getImage();
+
+                    setData(cName, cDesc, ((Coupon) extras.get("Coupon")).getImage());
                 }
             } else {
 
@@ -200,16 +189,16 @@ public class AddCoupon extends BaseActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         String imageUrl = taskSnapshot.getDownloadUrl().toString();
-                        setData(cName, cDesc, cCode, imageUrl);
+                        setData(cName, cDesc, imageUrl);
                     }
                 });
             }
         } else
-            setData(cName, cDesc, cCode, getResources().getString(R.string.defaultImage));
+            setData(cName, cDesc, getResources().getString(R.string.defaultImage));
     }
 
-    void setData(final String cName, final String cDesc, final String cCode, String image) {
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Shops/Coupons").child(extras.getString("ShopName"));
+    void setData(final String cName, final String cDesc, String image) {
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop/Offers");
         if (extras.containsKey("Coupon"))
             mDatabase = mDatabase.child(key);
         else
@@ -219,7 +208,7 @@ public class AddCoupon extends BaseActivity {
         mDatabase.child("key").setValue(mDatabase.getKey());
         mDatabase.child("name").setValue(cName);
         mDatabase.child("desc").setValue(cDesc);
-        mDatabase.child("code").setValue(cCode);
+        mDatabase.child("ShopKey").setValue(extras.getString("ShopKey"));
         hideProgressDialog();
         finish();
     }
@@ -240,7 +229,6 @@ public class AddCoupon extends BaseActivity {
     void inflateViews() {
         Coupon coupon = (Coupon) extras.get("Coupon");
         Picasso.with(this).load(coupon.getImage()).into(mImage);
-        etCode.setText(coupon.getCode());
         etDesc.setText(coupon.getDesc());
         etName.setText(coupon.getName());
         postButtonClickListener("DONE");

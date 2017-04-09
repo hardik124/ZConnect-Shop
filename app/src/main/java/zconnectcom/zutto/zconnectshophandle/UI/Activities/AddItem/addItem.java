@@ -1,11 +1,10 @@
-package zconnectcom.zutto.zconnectshophandle.UI.Activities;
+package zconnectcom.zutto.zconnectshophandle.UI.Activities.AddItem;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -36,23 +35,10 @@ public class addItem extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setToolbar();
         extras = getIntent().getExtras();
+        getSupportActionBar().setTitle(extras.getString("ShopName"));
 
-        if (toolbar != null) {
-            toolbar.setNavigationOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            onBackPressed();
-                        }
-                    });
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(extras.getString("ShopName"));
-        }
-        extras = getIntent().getExtras();
         type = extras.getString("type");
         key = extras.getString("ShopKey");
         setActionBarTitle(extras.getString("ShopName"));

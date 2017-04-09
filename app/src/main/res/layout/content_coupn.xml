@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:orientation="vertical">
-
-
     <ImageView
         android:id="@+id/offerImage"
         android:layout_width="match_parent"
@@ -30,11 +29,12 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/border"
         android:hint="Coupon Title"
         android:paddingLeft="10dp"
         android:paddingRight="5dp"
-        android:textSize="25sp" />
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/offerDesc"
@@ -43,27 +43,12 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/border"
         android:hint="Description"
         android:paddingLeft="10dp"
         android:paddingRight="5dp"
+        android:textColor="@color/black"
 
-        android:textSize="25sp" />
-
-    <EditText
-        android:id="@+id/offerCode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/border"
-        android:hint="Coupon code"
-        android:paddingLeft="10dp"
-        android:paddingRight="5dp"
-
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="45sp" />
-
+        android:textSize="18sp" />
 
 </LinearLayout>
+

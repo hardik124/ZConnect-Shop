@@ -13,13 +13,9 @@ import java.util.Vector;
 
 import zconnectcom.zutto.zconnectshophandle.R;
 
-/**
- * Created by Lokesh Garg on 31-03-2017.
- */
-
-public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
-    Context context;
-    Vector<String> galleryItem;
+class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
+    private Context context;
+    private Vector<String> galleryItem;
 
     public GalleryAdapter(Context context, Vector<String> galleryItem) {
         this.context = context;
@@ -40,7 +36,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(GalleryAdapter.ViewHolder holder, int position) {
-        Picasso.with(context).load(galleryItem.get(position).toString()).into(holder.image);
+        Picasso.with(context).load(galleryItem.get(position)).into(holder.image);
     }
 
     @Override
@@ -48,9 +44,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         return galleryItem.size();
     }
 
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView image;
+    class ViewHolder extends RecyclerView.ViewHolder {
+        private ImageView image;
 
         public ViewHolder(View itemView) {
             super(itemView);

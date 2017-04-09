@@ -47,6 +47,14 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseActi
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
 
+
+    }
+
+
+    public void setToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(
                     new View.OnClickListener() {
@@ -55,11 +63,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseActi
                             onBackPressed();
                         }
                     });
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
-
-
     protected void showBackButton() {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -153,7 +158,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseActi
     }
 
     protected void setActionBarTitle(int title) {
-        setActionBarTitle(getResources().getString(title));
+        getSupportActionBar().setTitle(getResources().getText(title));
     }
 
     public Toolbar getToolbar() {

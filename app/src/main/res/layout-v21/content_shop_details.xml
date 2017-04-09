@@ -43,6 +43,7 @@
             android:layout_toLeftOf="@+id/LL_shopDetailsIimage"
             android:hint="Shop Name"
             android:padding="4dp"
+            android:text="Name"
             android:textColor="@android:color/black"
             android:textSize="23sp"
             android:textStyle="bold" />
@@ -68,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="7dp"
                 android:autoLink="phone"
-                android:hint="Phone Number"
+                android:text="Phone Number"
                 android:textColor="#2196F3"
                 android:textSize="16sp"
                 android:textStyle="italic" />
@@ -82,8 +83,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="10dp"
             android:layout_toLeftOf="@+id/LL_shopDetailsIimage"
-            android:hint="Shop Details"
             android:padding="4dp"
+            android:text="Details"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 
@@ -100,9 +101,10 @@
             android:orientation="horizontal"
             android:weightSum="1">
 
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
                 android:weightSum="1">
 
@@ -112,15 +114,14 @@
                     android:layout_weight="0.1"
                     android:src="@drawable/ic_directions_black_24dp" />
 
-
                 <EditText
                     android:id="@+id/address"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="7dp"
-                    android:layout_weight="0.65"
-                    android:hint="Address"
+                    android:layout_weight="0.73"
                     android:paddingTop="2dp"
+                    android:text="Address"
                     android:textColor="@color/grey500"
                     android:textSize="16sp"
                     android:textStyle="italic" />
@@ -128,11 +129,13 @@
                 <Button
                     android:id="@+id/mapButton"
                     android:layout_width="0dp"
-                    android:layout_height="36dp"
-                    android:layout_weight="0.25"
-                    android:background="@color/wallet_holo_blue_light"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.15"
+                    android:background="@color/white"
+                    android:backgroundTint="@color/wallet_holo_blue_light"
                     android:text="Map"
                     android:textColor="@color/white" />
+
 
             </LinearLayout>
 
@@ -141,41 +144,13 @@
 
 
         <LinearLayout
-            android:id="@+id/offers"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignEnd="@+id/shop_details_directions"
-            android:layout_alignRight="@+id/shop_details_directions"
-            android:layout_below="@+id/shop_details_directions"
-            android:orientation="horizontal"
-            android:padding="4dp">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_card_giftcard_black_24dp" />
-
-            <EditText
-                android:id="@+id/et_offer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="7dp"
-                android:autoLink="phone"
-                android:hint="ZConnect coupon code"
-                android:textColor="#2196F3"
-                android:textSize="16sp"
-                android:textStyle="italic" />
-
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/gal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/offers"
-            android:layout_marginTop="15dp"
+            android:layout_below="@+id/shop_details_directions"
+            android:layout_marginTop="28dp"
             android:orientation="horizontal"
             android:weightSum="1">
 

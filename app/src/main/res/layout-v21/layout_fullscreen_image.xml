@@ -18,11 +18,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
             android:layout_marginTop="5dp"
-            android:contentDescription="User Image"
             android:paddingLeft="3dp"
             android:paddingRight="3dp"
-            android:scaleType="fitXY"
-            android:visibility="invisible" />
+            android:scaleType="fitXY" />
 
         <Button
             android:id="@+id/btnDel"

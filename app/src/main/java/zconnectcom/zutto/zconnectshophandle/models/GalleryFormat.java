@@ -1,9 +1,5 @@
 package zconnectcom.zutto.zconnectshophandle.models;
 
-/**
- * Created by Lokesh Garg on 31-03-2017.
- */
-
 public class GalleryFormat {
     String ImageName;
     String ImageUrl;

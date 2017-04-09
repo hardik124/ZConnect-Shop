@@ -3,20 +3,19 @@ package zconnectcom.zutto.zconnectshophandle.UI.Activities.Gallery;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import zconnectcom.zutto.zconnectshophandle.R;
-import zconnectcom.zutto.zconnectshophandle.UI.Activities.addItem;
+import zconnectcom.zutto.zconnectshophandle.UI.Activities.AddItem.addItem;
+import zconnectcom.zutto.zconnectshophandle.UI.Activities.Base.BaseActivity;
 import zconnectcom.zutto.zconnectshophandle.Utils.FirebaseRVAdapter;
 
-public class ShopGallery extends AppCompatActivity {
+public class ShopGallery extends BaseActivity {
     DatabaseReference mMenu;
     String key;
     Bundle extras;
@@ -33,24 +32,13 @@ public class ShopGallery extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         extras = getIntent().getExtras();
 
-        if (toolbar != null) {
-            toolbar.setNavigationOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            onBackPressed();
-                        }
-                    });
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(extras.getString("ShopName"));
-        }
+        setToolbar();
         key = extras.getString("ShopKey");
-        toolbar.setTitle(extras.getString("ShopName"));
+        showBackButton();
+        getSupportActionBar().setTitle(extras.getString("ShopName"));
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
