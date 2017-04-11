@@ -308,8 +308,8 @@ public class ShopDetails extends BaseActivity {
         }
         if (selectedFromMap) {
             LatLng latLng = Venue.getLatLng();
-            newData.child("lon").setValue(latLng.longitude);
-            newData.child("lat").setValue(latLng.latitude);
+            newData.child("lon").setValue(latLng.longitude.toString());
+            newData.child("lat").setValue(latLng.latitude.toString());
         }
         newData.child("address").setValue(address.getText().toString().replace(".", ""));
         hideProgressDialog();
