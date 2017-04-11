@@ -4,15 +4,15 @@ public class ShopDetailsItem {
     String name;
     String number;
     String imageurl;
-    Double lat;
+    String lat;
     String details;
-    Double lon;
+    String lon;
     String menuurl;
     String cat;
     String shopid, address, code;
 
 
-    public ShopDetailsItem(String name, String code, String shopid, String number, String imageurl, Double lat, String details, Double lon, String menuurl, String cat, String address) {
+    public ShopDetailsItem(String name, String code, String shopid, String number, String imageurl, String lat, String details, String lon, String menuurl, String cat, String address) {
         this.name = name;
         this.number = number;
         this.imageurl = imageurl;
@@ -60,7 +60,7 @@ public class ShopDetailsItem {
 
     public String getLon() {
 
-        return lon.toString();
+        return lon;
     }
 
 
@@ -75,7 +75,7 @@ public class ShopDetailsItem {
 
     public String getLat() {
 
-        return lat.toString();
+        return lat;
     }
 
     public String getNumber() {
