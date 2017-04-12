@@ -30,6 +30,7 @@ import java.io.IOException;
 import zconnectcom.zutto.zconnectshophandle.R;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Base.BaseActivity;
 import zconnectcom.zutto.zconnectshophandle.Utils.IntentHandle;
+import zconnectcom.zutto.zconnectshophandle.Utils.statIncrement;
 import zconnectcom.zutto.zconnectshophandle.models.Coupon;
 
 public class AddCoupon extends BaseActivity {
@@ -162,7 +163,7 @@ public class AddCoupon extends BaseActivity {
 
     }
 
-    void postCoupon(final String cName, final String cDesc) {
+    private void postCoupon(final String cName, final String cDesc) {
         showProgressDialog();
         if (mImageUri != null) {
             if (extras.containsKey("Coupons")) {
@@ -201,9 +202,11 @@ public class AddCoupon extends BaseActivity {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop/Offers");
         if (extras.containsKey("Coupon"))
             mDatabase = mDatabase.child(key);
-        else
+        else {
             mDatabase = mDatabase.push();
-
+            statIncrement statIncrement = new statIncrement("TotalOffers");
+            statIncrement.change(true);
+        }
         mDatabase.child("image").setValue(image);
         mDatabase.child("key").setValue(mDatabase.getKey());
         mDatabase.child("name").setValue(cName);
