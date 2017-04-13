@@ -39,7 +39,7 @@ public class AddCoupon extends BaseActivity {
     Bundle extras;
     IntentHandle intentHandle;
     Button mPost;
-    String key;
+    String key, recentskey;
     EditText etName, etDesc;
     Boolean changeImage = false;
     Uri mImageUri = null;
@@ -163,7 +163,7 @@ public class AddCoupon extends BaseActivity {
 
     }
 
-    private void postCoupon(final String cName, final String cDesc) {
+    void postCoupon(final String cName, final String cDesc) {
         showProgressDialog();
         if (mImageUri != null) {
             if (extras.containsKey("Coupons")) {
@@ -200,18 +200,32 @@ public class AddCoupon extends BaseActivity {
 
     void setData(final String cName, final String cDesc, String image) {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop/Offers");
-        if (extras.containsKey("Coupon"))
+        DatabaseReference mRecents = FirebaseDatabase.getInstance().getReference().child("home");
+        if (extras.containsKey("Coupon")) {
             mDatabase = mDatabase.child(key);
+            mRecents = mRecents.child(recentskey);
+        }
         else {
             mDatabase = mDatabase.push();
+            mRecents.push();
+            recentskey = mRecents.getKey();
             statIncrement statIncrement = new statIncrement("TotalOffers");
             statIncrement.change(true);
+        }
+        {
+            mRecents.child("imageurl").setValue(image);
+            mRecents.child("name").setValue(cName);
+            mRecents.child("desc").setValue(cDesc);
+            mRecents.child("id").setValue(extras.getString("ShopKey"));
+            mRecents.child("desc2").setValue(extras.getString("ShopKey"));
+            mRecents.child("feature").setValue("Shop");
         }
         mDatabase.child("image").setValue(image);
         mDatabase.child("key").setValue(mDatabase.getKey());
         mDatabase.child("name").setValue(cName);
         mDatabase.child("desc").setValue(cDesc);
         mDatabase.child("ShopKey").setValue(extras.getString("ShopKey"));
+        mDatabase.child("recentsKey").setValue(recentskey);
         hideProgressDialog();
         finish();
     }
@@ -221,6 +235,7 @@ public class AddCoupon extends BaseActivity {
             Coupon coupon = (Coupon) extras.get("Coupon");
             setActionBarTitle(coupon.getName());
             key = coupon.getKey();
+            recentskey = coupon.getRecentsKey();
             inflateViews();
         } else {
             setActionBarTitle("Add coupon");

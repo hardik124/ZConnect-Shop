@@ -150,23 +150,39 @@
             android:layout_alignRight="@+id/shop_details_directions"
             android:layout_below="@+id/shop_details_directions"
             android:orientation="horizontal"
-            android:padding="4dp">
+            android:padding="4dp"
+            android:weightSum="1">
 
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.00"
                 android:contentDescription="offer logo"
                 android:src="@drawable/ic_card_giftcard_black_24dp" />
 
             <EditText
-                android:id="@+id/et_offer"
-                android:layout_width="match_parent"
+                android:id="@+id/et_offer_title"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="7dp"
+                android:layout_weight="0.45"
+                android:autoLink="phone"
+                android:hint="ZConnect coupon Title"
+                android:textColor="#2196F3"
+                android:textSize="12sp"
+                android:textStyle="italic" />
+
+            <EditText
+                android:id="@+id/et_offer_code"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_weight="0.45"
                 android:autoLink="phone"
                 android:hint="ZConnect coupon code"
                 android:textColor="#2196F3"
-                android:textSize="16sp"
+                android:textSize="12sp"
                 android:textStyle="italic" />
 
         </LinearLayout>

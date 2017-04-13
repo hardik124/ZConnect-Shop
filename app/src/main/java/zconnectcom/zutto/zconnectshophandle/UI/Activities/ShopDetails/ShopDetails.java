@@ -50,10 +50,10 @@ import zconnectcom.zutto.zconnectshophandle.models.ShopDetailsItem;
 
 public class ShopDetails extends BaseActivity {
     final int GALLERY_REQUEST = 7;
-    EditText name, details, number, address, et_code;
+    EditText name, details, number, address, et_code, et_title;
     LinearLayout linearLayout, numberlayout;
     CircularImageView image;
-    String nam, detail, lat, lon, imageurl, num, menuurl, shopid = null, shopAdd, code;
+    String nam, detail, lat, lon, imageurl, num, menuurl, shopid = null, shopAdd, code, couponTitle;
     DatabaseReference mDatabase, mDatabaseMenu;
     HorizontalScrollView galleryScroll, menuScroll;
     Button done, mapBtn;
@@ -92,7 +92,8 @@ public class ShopDetails extends BaseActivity {
     void initLayout() {
         name = (EditText) findViewById(R.id.shop_details_name);
         details = (EditText) findViewById(R.id.shop_details_details);
-        et_code = (EditText) findViewById(R.id.et_offer);
+        et_code = (EditText) findViewById(R.id.et_offer_code);
+        et_title = (EditText) findViewById(R.id.et_offer_title);
         numberlayout = (LinearLayout) findViewById(R.id.shop_details_num);
         linearLayout = (LinearLayout) findViewById(R.id.shop_details_directions);
         number = (EditText) findViewById(R.id.shop_details_number);
@@ -197,6 +198,8 @@ public class ShopDetails extends BaseActivity {
                     shopid = item[0].getShopid();
                     shopAdd = item[0].getAddress();
                     code = item[0].getCode();
+                    couponTitle = item[0].getCouponTitle();
+
                     initData();
 
                 } catch (Exception e) {
@@ -286,14 +289,16 @@ public class ShopDetails extends BaseActivity {
         final DatabaseReference newData = FirebaseDatabase.getInstance().getReference().child("Shop/Shops").child(ShopKey);
         if (name.getText().toString().compareTo(nam) != 0)
             newData.child("name").setValue(name.getText().toString());
-        if (name.getText().toString().compareTo(num) != 0)
+        if (number.getText().toString().compareTo(num) != 0)
             newData.child("number").setValue(number.getText().toString());
 
-        if (name.getText().toString().compareTo(detail) != 0)
+        if (details.getText().toString().compareTo(detail) != 0)
             newData.child("details").setValue(details.getText().toString());
 
-        if (name.getText().toString().compareTo(code) != 0)
+        if (et_code.getText().toString().compareTo(code) != 0)
             newData.child("code").setValue(et_code.getText().toString());
+        if (et_title.getText().toString().compareTo(couponTitle) != 0)
+            newData.child("couponTitle").setValue(et_title.getText().toString());
 
         if (imageChanged) {
             StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("Shops");
@@ -308,10 +313,10 @@ public class ShopDetails extends BaseActivity {
         }
         if (selectedFromMap) {
             LatLng latLng = Venue.getLatLng();
-            newData.child("lon").setValue(latLng.longitude);
-            newData.child("lat").setValue(latLng.latitude);
+            newData.child("lon").setValue(String.valueOf(latLng.longitude));
+            newData.child("lat").setValue(String.valueOf(latLng.latitude));
         }
-        newData.child("address").setValue(address.getText().toString().replace(".", ""));
+        newData.child("address").setValue(address.getText().toString().replace(".", " ").replace("/", "-"));
         hideProgressDialog();
         showSnack("Updated Successfully");
     }
