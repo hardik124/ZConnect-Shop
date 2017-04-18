@@ -1,13 +1,11 @@
 package zconnectcom.zutto.zconnectshophandle.models;
 
 public class GalleryFormat {
-    String ImageName;
-    String ImageUrl;
+    String imageurl;
     String key;
 
     public GalleryFormat(String ImageName, String ImageUrl, String key) {
-        this.ImageName = ImageName;
-        this.ImageUrl = ImageUrl;
+        this.imageurl = ImageUrl;
         this.key = key;
     }
 
@@ -20,18 +18,11 @@ public class GalleryFormat {
     }
 
     public String getImage() {
-        return ImageUrl;
+        return imageurl;
     }
 
     public void setImage(String imageurl) {
-        this.ImageUrl = imageurl;
+        this.imageurl = imageurl;
     }
 
-    public String getTitle() {
-        return ImageName;
-    }
-
-    public void setTitle(String name) {
-        this.ImageName = name;
-    }
 }

@@ -26,13 +26,6 @@ public class ShopGallery extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop_menu);
 
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         extras = getIntent().getExtras();
 
         setToolbar();
@@ -52,13 +45,13 @@ public class ShopGallery extends BaseActivity {
             }
         });
         initRV();
-        FirebaseRVAdapter menuAdapt = new FirebaseRVAdapter("Gallery", mMenu, key);
-        mMenuList.setAdapter(menuAdapt.showImage());
+
 
     }
 
+
     void initRV() {
-        mMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(key).child("Gallery");
+        mMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Gallery").child(extras.getString("ShopKey"));
 
         mMenuList = (RecyclerView) findViewById(R.id.menuRV);
 
@@ -68,6 +61,9 @@ public class ShopGallery extends BaseActivity {
         productLinearLayout.setReverseLayout(true);
         productLinearLayout.setStackFromEnd(true);
         mMenuList.setLayoutManager(productLinearLayout);
+
+        FirebaseRVAdapter menuAdapt = new FirebaseRVAdapter("Gallery", mMenu, key, this);
+        mMenuList.setAdapter(menuAdapt.showImage());
 
     }
 

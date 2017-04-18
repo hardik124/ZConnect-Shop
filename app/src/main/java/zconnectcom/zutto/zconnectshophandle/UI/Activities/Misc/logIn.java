@@ -3,6 +3,7 @@ package zconnectcom.zutto.zconnectshophandle.UI.Activities.Misc;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,6 +65,7 @@ public class logIn extends BaseActivity {
                             //Auth
                             if (dataSnapshot.hasChild(code)) {
                                 Intent loginIntent = new Intent(logIn.this, home.class);
+                                Log.d("key", dataSnapshot.child(code).child("Key").getValue().toString());
                                 loginIntent.putExtra("ShopKey", dataSnapshot.child(code).child("Key").getValue().toString());
                                 loginIntent.putExtra("ShopName", (dataSnapshot.child(code).child("Name").getValue()).toString());
                                 loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

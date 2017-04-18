@@ -1,9 +1,11 @@
 package zconnectcom.zutto.zconnectshophandle.ViewHolder;
 
+import android.app.ProgressDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Callback;
@@ -13,8 +15,8 @@ import zconnectcom.zutto.zconnectshophandle.R;
 
 
 public class ImageViewHolder extends RecyclerView.ViewHolder {
+    public View mView;
     Button mDel;
-    View mView;
     String ShopKey;
     String Type;
 
@@ -34,18 +36,29 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
         mDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseDatabase.getInstance().getReference("Shop/Shops").child(ShopKey).child(Type).child(key).removeValue();
+                try {
+                    FirebaseDatabase.getInstance().getReference("Shop/Shops").child(ShopKey).child(Type).child(key).removeValue();
+                } catch (Exception e) {
+                    Toast.makeText(mView.getContext(), "Cannot delete image", Toast.LENGTH_SHORT);
+                }
             }
         });
 
     }
 
     public void setImage(final String url) {
-        Picasso.with(mView.getContext()).load(url).into((ImageView) mView.findViewById(R.id.imgDisplay), new Callback() {
+        final ProgressDialog mProg = new ProgressDialog(mView.getContext());
+        mProg.setMessage("Loading");
+        // mProg.show();
+        final ImageView mImage = (ImageView) mView.findViewById(R.id.imgDisplay);
+        mImage.setVisibility(View.INVISIBLE);
+        Picasso.with(mView.getContext()).load(url).into(mImage, new Callback() {
             @Override
             public void onSuccess() {
                 mDel.setVisibility(View.VISIBLE);
+                mImage.setVisibility(View.VISIBLE);
                 mView.findViewById(R.id.imgDisplay).setVisibility(View.VISIBLE);
+                mProg.dismiss();
             }
 
             @Override

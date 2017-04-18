@@ -54,11 +54,12 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
         setContentView(R.layout.activity_home);
         extras = getIntent().getExtras();
         //getToolbar().setTitle(extras.getString("ShopName"));
+        Log.d("key", extras.getString("ShopKey"));
 
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
@@ -94,7 +95,7 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
     }
 
     void initRV() {
-        mCoupons = FirebaseDatabase.getInstance().getReference("Shop/Offers").orderByChild("ShopKey").equalTo(extras.getString("ShopKey"));
+        mCoupons = FirebaseDatabase.getInstance().getReference("Shop/Offers").orderByChild("shopKey").equalTo(extras.getString("ShopKey"));
         mCouponList = (RecyclerView) findViewById(R.id.couponList);
         mCouponList.setHasFixedSize(true);
         mCoupons.keepSynced(true);
@@ -151,7 +152,6 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (toggle.onOptionsItemSelected(item)) {

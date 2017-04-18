@@ -83,10 +83,9 @@ public class addItem extends BaseActivity {
 
 
     void setData(final String cName, String image) {
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop/Shops").child(key).child(type).push();
-        mDatabase.child("ImageUrl").setValue(image);
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child(type).child(key).push();
+        mDatabase.child("imageurl").setValue(image);
         mDatabase.child("key").setValue(mDatabase.getKey());
-        mDatabase.child("ImageName").setValue(cName);
         hideProgressDialog();
         finish();
     }
@@ -101,7 +100,8 @@ public class addItem extends BaseActivity {
                 mImageUri = intentHandle.getPickImageResultUri(data);
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 60, out);
+                Double ratio = 200000.0 / bitmap.getByteCount();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.ceil(ratio * 100), out);
                 String path = MediaStore.Images.Media.insertImage(addItem.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                 mImageUri = Uri.parse(path);

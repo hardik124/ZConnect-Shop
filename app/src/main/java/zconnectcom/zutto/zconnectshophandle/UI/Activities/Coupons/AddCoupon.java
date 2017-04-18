@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,13 +52,13 @@ public class AddCoupon extends BaseActivity {
 
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         extras = getIntent().getExtras();
+        Log.d("key", extras.getString("ShopKey"));
         setToolbar();
 
         initViews();
         getSupportActionBar().setTitle(R.string.title_activity_add_coupon);
         showBackButton();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        extras = getIntent().getExtras();
         ImageViewClickListener();
         checkType();
 
@@ -207,7 +208,7 @@ public class AddCoupon extends BaseActivity {
         }
         else {
             mDatabase = mDatabase.push();
-            mRecents.push();
+            mRecents = mRecents.push();
             recentskey = mRecents.getKey();
             statIncrement statIncrement = new statIncrement("TotalOffers");
             statIncrement.change(true);
@@ -224,7 +225,7 @@ public class AddCoupon extends BaseActivity {
         mDatabase.child("key").setValue(mDatabase.getKey());
         mDatabase.child("name").setValue(cName);
         mDatabase.child("desc").setValue(cDesc);
-        mDatabase.child("ShopKey").setValue(extras.getString("ShopKey"));
+        mDatabase.child("shopKey").setValue(extras.getString("ShopKey"));
         mDatabase.child("recentsKey").setValue(recentskey);
         hideProgressDialog();
         finish();

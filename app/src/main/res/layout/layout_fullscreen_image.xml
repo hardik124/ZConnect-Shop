@@ -21,7 +21,7 @@
             android:contentDescription="User Image"
             android:paddingLeft="3dp"
             android:paddingRight="3dp"
-            android:scaleType="fitXY"
+            android:scaleType="center"
             android:visibility="invisible" />
 
         <Button
