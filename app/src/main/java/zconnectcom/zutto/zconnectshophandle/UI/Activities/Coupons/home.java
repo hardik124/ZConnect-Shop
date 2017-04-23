@@ -54,7 +54,6 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
         setContentView(R.layout.activity_home);
         extras = getIntent().getExtras();
         //getToolbar().setTitle(extras.getString("ShopName"));
-        Log.d("key", extras.getString("ShopKey"));
 
     }
 
@@ -171,6 +170,7 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
             Intent menu = new Intent(this, ShopMenu.class);
             menu.putExtra("ShopKey", extras.getString("ShopKey"));
             menu.putExtra("ShopName", extras.getString("ShopName"));
+            menu.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(menu);
         } else if (id == R.id.Coupons) {
 
@@ -192,10 +192,12 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
             Intent menu = new Intent(this, ShopDetails.class);
             menu.putExtra("ShopKey", extras.getString("ShopKey"));
             menu.putExtra("ShopName", extras.getString("ShopName"));
+            menu.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(menu);
         } else if (id == R.id.Gallery) {
             Intent menu = new Intent(this, ShopGallery.class);
             menu.putExtra("ShopKey", extras.getString("ShopKey"));
+            menu.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             menu.putExtra("ShopName", extras.getString("ShopName"));
             startActivity(menu);
         }

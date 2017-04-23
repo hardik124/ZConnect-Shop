@@ -100,30 +100,42 @@ public class AddCoupon extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-            try {
-                mImageUri = intentHandle.getPickImageResultUri(data);
-            } catch (Exception e) {
-                showSnack("Cannot select image , Retry");
-            }
-            CropImage.activity(mImageUri)
+            Uri imageUri = intentHandle.getPickImageResultUri(data);
+            CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setSnapRadius(2)
-                    .setAspectRatio(3, 2)
                     .start(this);
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
+
+//
+//                mAddImage.setImageURI(mImageUri);
+
                 try {
                     mImageUri = result.getUri();
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    Bitmap bitmap2 = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 15, out);
+                    bitmap2.compress(Bitmap.CompressFormat.JPEG, 10, out);
+                    final int maxSize = 400;
+                    int outWidth;
+                    int outHeight;
+                    int inWidth = bitmap2.getWidth();
+                    int inHeight = bitmap2.getHeight();
+                    if (inWidth > inHeight) {
+                        outWidth = maxSize;
+                        outHeight = (inHeight * maxSize) / inWidth;
+                    } else {
+                        outHeight = maxSize;
+                        outWidth = (inWidth * maxSize) / inHeight;
+                    }
+
+                    Bitmap bitmap = Bitmap.createScaledBitmap(bitmap2, outWidth, outHeight, true);
                     String path = MediaStore.Images.Media.insertImage(AddCoupon.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
                     mImage.setImageURI(mImageUri);
-
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -131,12 +143,11 @@ public class AddCoupon extends BaseActivity {
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
-                showSnack(error.getMessage());
             }
         }
 
-
     }
+
 
     void onClickPost() {
         final String cName = etName.getText().toString();
