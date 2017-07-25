@@ -114,7 +114,7 @@ public class AddCoupon extends BaseActivity {
                     mImage.setImageURI(mImageUri);
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    Double ratio = Math.ceil(500000.0 / bitmap.getByteCount());
+                    Double ratio = Math.ceil(250000.0 / bitmap.getByteCount());
                     bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
                     String path = MediaStore.Images.Media.insertImage(AddCoupon.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
