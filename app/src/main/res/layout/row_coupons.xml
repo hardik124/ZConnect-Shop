@@ -24,8 +24,8 @@
 
         <ImageView
             android:id="@+id/editcoupon"
-            android:layout_width="189dp"
-            android:layout_height="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:contentDescription="Edit Coupon button"
             app:srcCompat="@drawable/ic_mode_edit_black_24dp" />
 

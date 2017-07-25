@@ -15,8 +15,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import zconnectcom.zutto.zconnectshophandle.R;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Base.BaseActivity;
@@ -99,18 +102,38 @@ public class addItem extends BaseActivity {
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
             try {
                 mImageUri = intentHandle.getPickImageResultUri(data);
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 60, out);
-                String path = MediaStore.Images.Media.insertImage(addItem.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
-
-                mImageUri = Uri.parse(path);
-                mImage.setImageURI(mImageUri);
+                CropImage.activity(mImageUri)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setSnapRadius(2)
+                        .start(this);
             } catch (Exception e) {
                 showSnack("Cannot select image , Retry");
             }
 
+            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    try {
+                        mImageUri = result.getUri();
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        Double ratio = Math.ceil(100000.0 / bitmap.getByteCount());
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
+                        String path = MediaStore.Images.Media.insertImage(addItem.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
+                        mImageUri = Uri.parse(path);
+                        mImage.setImageURI(mImageUri);
+
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Exception error = result.getError();
+                    showSnack(error.getMessage());
+                }
+            }
         }
 
 

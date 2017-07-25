@@ -106,7 +106,6 @@ public class AddCoupon extends BaseActivity {
             CropImage.activity(mImageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setSnapRadius(2)
-                    .setAspectRatio(3, 2)
                     .start(this);
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -116,7 +115,8 @@ public class AddCoupon extends BaseActivity {
                     mImageUri = result.getUri();
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 15, out);
+                    Double ratio = Math.ceil(100000.0 / bitmap.getByteCount());
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
                     String path = MediaStore.Images.Media.insertImage(AddCoupon.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);

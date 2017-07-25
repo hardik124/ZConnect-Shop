@@ -7,6 +7,7 @@
     android:paddingTop="5dp">
 
     <LinearLayout
+        android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/border"
@@ -21,8 +22,7 @@
             android:contentDescription="User Image"
             android:paddingLeft="3dp"
             android:paddingRight="3dp"
-            android:scaleType="fitXY"
-            android:visibility="invisible" />
+            android:scaleType="fitXY" />
 
         <Button
             android:id="@+id/btnDel"
@@ -32,8 +32,12 @@
             android:background="@color/teal900"
             android:text="Delete"
             android:textColor="@color/white"
-            android:textStyle="bold"
-            android:visibility="invisible" />
+            android:textStyle="bold" />
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
 </android.support.v7.widget.CardView>
