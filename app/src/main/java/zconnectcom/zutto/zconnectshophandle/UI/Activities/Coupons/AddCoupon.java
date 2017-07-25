@@ -89,7 +89,6 @@ public class AddCoupon extends BaseActivity {
     void initViews() {
         mPost = (Button) findViewById(R.id.postCoupon);
         mImage = (ImageView) findViewById(R.id.offerImage);
-        mImage.setImageResource(R.drawable.addimage);
         etName = (EditText) findViewById(R.id.offerName);
         etDesc = (EditText) findViewById(R.id.offerDesc);
     }
@@ -111,14 +110,15 @@ public class AddCoupon extends BaseActivity {
             if (resultCode == RESULT_OK) {
                 try {
                     mImageUri = result.getUri();
-                    Bitmap bitmap2 = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    mImage.setImageURI(mImageUri);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    Double ratio = Math.ceil(100000.0 / bitmap.getByteCount());
+                    Double ratio = Math.ceil(500000.0 / bitmap.getByteCount());
                     bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
                     String path = MediaStore.Images.Media.insertImage(AddCoupon.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
-                    mImage.setImageURI(mImageUri);
+                    //mImage.setImageURI(mImageUri);
 
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -116,7 +116,7 @@ public class addItem extends BaseActivity {
                         mImageUri = result.getUri();
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                         ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        Double ratio = Math.ceil(100000.0 / bitmap.getByteCount());
+                        Double ratio = Math.ceil(500000.0 / bitmap.getByteCount());
                         bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
                         String path = MediaStore.Images.Media.insertImage(addItem.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
