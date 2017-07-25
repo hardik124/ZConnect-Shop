@@ -15,7 +15,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -54,7 +53,6 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
         setContentView(R.layout.activity_home);
         extras = getIntent().getExtras();
         //getToolbar().setTitle(extras.getString("ShopName"));
-
     }
 
     @Override
@@ -64,6 +62,7 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
 //        setSupportActionBar(toolbar);
         toolbar.setTitle("Offers");
         setActionBarTitle("Offers");
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -117,14 +116,12 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
             @Override
             protected void populateViewHolder(CouponViewHolder viewHolder, Coupon model, int position) {
 
-                viewHolder.setData(extras.getString("ShopName"));
-                viewHolder.setDelButton(model.getKey());
+                viewHolder.setData(extras.getString("ShopName"), extras.getString("ShopKey"));
+                viewHolder.setDelButton(model.getKey(), model.getName(), model.getRecentsKey());
                 viewHolder.setEditButton(model);
                 viewHolder.setImage(model.getImage());
                 viewHolder.setTitle(model.getName());
                 viewHolder.setDesc(model.getDesc());
-
-                Log.d("data_offers ", model.toString());
             }
         };mCouponList.setAdapter(firebaseRecyclerAdapter);
     }
@@ -138,21 +135,9 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
             super.onBackPressed();
         }
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.nav_bar, menu);
-//        return true;
-//    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
 
-        //noinspection SimplifiableIfStatement
         if (toggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -237,7 +222,6 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
                 String name = (String) (dataSnapshot.child("name").getValue() == null ? "N/A" : dataSnapshot.child("name").getValue());
                 ((TextView) findViewById(R.id.userName)).setText(name);
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 

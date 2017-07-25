@@ -17,7 +17,7 @@ import zconnectcom.zutto.zconnectshophandle.Utils.FirebaseRVAdapter;
 
 public class ShopGallery extends BaseActivity {
     DatabaseReference mMenu;
-    String key;
+    String key, name;
     Bundle extras;
     RecyclerView mMenuList;
 
@@ -25,22 +25,23 @@ public class ShopGallery extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop_menu);
-
         extras = getIntent().getExtras();
         setToolbar();
+        showBackButton();
+        key = extras.getString("ShopKey");
+        name = extras.getString("ShopName");
+        getSupportActionBar().setTitle(name);
+
+        mMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Gallery").child(key);
+        mMenu.keepSynced(true);
         mMenuList = (RecyclerView) findViewById(R.id.menuRV);
-        LinearLayoutManager productLinearLayout = new LinearLayoutManager(getApplicationContext());
+        LinearLayoutManager productLinearLayout = new LinearLayoutManager(this);
         productLinearLayout.setReverseLayout(true);
         productLinearLayout.setStackFromEnd(true);
         mMenuList.setLayoutManager(productLinearLayout);
-
-        mMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Gallery").child(extras.getString("ShopKey"));
-        mMenu.keepSynced(true);
         initRV();
 
-        key = extras.getString("ShopKey");
-        showBackButton();
-        getSupportActionBar().setTitle(extras.getString("ShopName"));
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,7 +60,7 @@ public class ShopGallery extends BaseActivity {
 
 
     void initRV() {
-        FirebaseRVAdapter menuAdapt = new FirebaseRVAdapter("Gallery", mMenu, key, this);
+        FirebaseRVAdapter menuAdapt = new FirebaseRVAdapter("Gallery", mMenu, key, name);
         mMenuList.setAdapter(menuAdapt.showImage());
 
     }

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,7 +39,7 @@ public class AddCoupon extends BaseActivity {
     Bundle extras;
     IntentHandle intentHandle;
     Button mPost;
-    String key, recentskey;
+    String key, recentskey, shopKey, shopName;
     EditText etName, etDesc;
     Boolean changeImage = false;
     Uri mImageUri = null;
@@ -52,8 +51,10 @@ public class AddCoupon extends BaseActivity {
 
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         extras = getIntent().getExtras();
-        Log.d("key", extras.getString("ShopKey"));
         setToolbar();
+        shopName = extras.getString("ShopName");
+        shopKey = extras.getString("ShopKey");
+
 
         initViews();
         getSupportActionBar().setTitle(R.string.title_activity_add_coupon);
@@ -163,7 +164,7 @@ public class AddCoupon extends BaseActivity {
         if (mImageUri != null) {
             if (extras.containsKey("Coupons")) {
                 if (changeImage) {
-                    StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("ShopCoupons").child(extras.getString("ShopName"));
+                    StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("Shops").child(shopKey + shopName).child("Coupons");
                     final StorageReference filepath = mStorage.child(cName);
                     filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -179,7 +180,7 @@ public class AddCoupon extends BaseActivity {
                 }
             } else {
 
-                StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("ShopCoupons").child(extras.getString("ShopName"));
+                StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("Shops").child(shopKey + shopName).child("Coupons");
                 final StorageReference filepath = mStorage.child(cName);
                 filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -198,22 +199,22 @@ public class AddCoupon extends BaseActivity {
         DatabaseReference mRecents = FirebaseDatabase.getInstance().getReference().child("home");
         if (extras.containsKey("Coupon")) {
             mDatabase = mDatabase.child(key);
-            mRecents = mRecents.child(recentskey);
+            // mRecents = mRecents.child(recentskey);
         }
         else {
             mDatabase = mDatabase.push();
-            mRecents = mRecents.push();
-            recentskey = mRecents.getKey();
+            //  mRecents = mRecents.push();
+            //recentskey = mRecents.getKey();
             statIncrement statIncrement = new statIncrement("TotalOffers");
             statIncrement.change(true);
         }
         {
-            mRecents.child("imageurl").setValue(image);
-            mRecents.child("name").setValue(cName);
-            mRecents.child("desc").setValue(cDesc);
-            mRecents.child("id").setValue(extras.getString("ShopKey"));
-            mRecents.child("desc2").setValue(extras.getString("ShopKey"));
-            mRecents.child("feature").setValue("Shop");
+//            mRecents.child("imageurl").setValue(image);
+//            mRecents.child("name").setValue(cName);
+//            mRecents.child("desc").setValue(cDesc);
+//            mRecents.child("id").setValue(extras.getString("ShopKey"));
+//            mRecents.child("desc2").setValue(extras.getString("ShopKey"));
+//            mRecents.child("feature").setValue("Shop");
         }
         mDatabase.child("image").setValue(image);
         mDatabase.child("key").setValue(mDatabase.getKey());

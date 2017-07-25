@@ -24,11 +24,12 @@ import java.io.IOException;
 import zconnectcom.zutto.zconnectshophandle.R;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Base.BaseActivity;
 import zconnectcom.zutto.zconnectshophandle.Utils.IntentHandle;
+import zconnectcom.zutto.zconnectshophandle.models.GalleryFormat;
 
 public class addItem extends BaseActivity {
     final int GALLERY_REQUEST = 7;
     Bundle extras;
-    String type, key;
+    String type, key, shopName;
     IntentHandle intentHandle;
     ImageView mImage;
     Uri mImageUri;
@@ -44,7 +45,9 @@ public class addItem extends BaseActivity {
 
         type = extras.getString("type");
         key = extras.getString("ShopKey");
-        setActionBarTitle(extras.getString("ShopName"));
+        shopName = (extras.getString("ShopName"));
+
+        getSupportActionBar().setTitle(shopName);
         mImage = (ImageView) findViewById(R.id.imgDisplay);
         mImage.setImageResource(R.drawable.addimage);
         mImage.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +70,7 @@ public class addItem extends BaseActivity {
                 else {
                     showProgressDialog();
                     final String name = Long.toHexString(Double.doubleToLongBits(Math.random()));
-                    StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("ShopMenu").child(extras.getString("ShopName"));
+                    StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("Shops").child(key + shopName).child(type);
                     final StorageReference filepath = mStorage.child(name);
                     filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -86,9 +89,12 @@ public class addItem extends BaseActivity {
 
 
     void setData(final String cName, String image) {
+        final GalleryFormat item = new GalleryFormat();
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child(type).child(key).push();
-        mDatabase.child("imageurl").setValue(image);
-        mDatabase.child("key").setValue(mDatabase.getKey());
+        item.setName(cName);
+        item.setKey(mDatabase.getKey());
+        item.setImage(image);
+        mDatabase.setValue(item);
         hideProgressDialog();
         finish();
     }
@@ -108,30 +114,28 @@ public class addItem extends BaseActivity {
             } catch (Exception e) {
                 showSnack("Cannot select image , Retry");
             }
+        }
 
-            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-                CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                if (resultCode == RESULT_OK) {
-                    try {
-                        mImageUri = result.getUri();
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        Double ratio = Math.ceil(500000.0 / bitmap.getByteCount());
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
-                        String path = MediaStore.Images.Media.insertImage(addItem.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                try {
+                    mImageUri = result.getUri();
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    Double ratio = Math.ceil(500000.0 / bitmap.getByteCount());
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
+                    String path = MediaStore.Images.Media.insertImage(addItem.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
-                        mImageUri = Uri.parse(path);
-                        mImage.setImageURI(mImageUri);
-
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                    Exception error = result.getError();
-                    showSnack(error.getMessage());
+                    mImageUri = Uri.parse(path);
+                    mImage.setImageURI(mImageUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+                showSnack(error.getMessage());
             }
         }
 

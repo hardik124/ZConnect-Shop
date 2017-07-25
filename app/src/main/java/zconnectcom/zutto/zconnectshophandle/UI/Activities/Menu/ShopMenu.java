@@ -17,7 +17,7 @@ import zconnectcom.zutto.zconnectshophandle.Utils.FirebaseRVAdapter;
 
 public class ShopMenu extends BaseActivity {
     DatabaseReference mMenu;
-    String key;
+    String key, name;
     Bundle extras;
     RecyclerView mMenuList;
 
@@ -29,19 +29,18 @@ public class ShopMenu extends BaseActivity {
         setToolbar();
         showBackButton();
         key = extras.getString("ShopKey");
+        name = extras.getString("ShopName");
+        getSupportActionBar().setTitle(name);
 
-        mMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Menu").child(extras.getString("ShopKey"));
+        mMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Menu").child(key);
         mMenuList = (RecyclerView) findViewById(R.id.menuRV);
-
-        mMenuList.setHasFixedSize(true);
         mMenu.keepSynced(true);
-        LinearLayoutManager productLinearLayout = new LinearLayoutManager(getApplicationContext());
+        LinearLayoutManager productLinearLayout = new LinearLayoutManager(this);
         productLinearLayout.setReverseLayout(true);
         productLinearLayout.setStackFromEnd(true);
         mMenuList.setLayoutManager(productLinearLayout);
         initRV();
 
-        getSupportActionBar().setTitle(extras.getString("ShopName"));
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -64,7 +63,7 @@ public class ShopMenu extends BaseActivity {
 
     void initRV() {
 
-        FirebaseRVAdapter menuAdapt = new FirebaseRVAdapter("Menu", mMenu, key, this);
+        FirebaseRVAdapter menuAdapt = new FirebaseRVAdapter("Menu", mMenu, key, name);
         mMenuList.setAdapter(menuAdapt.showImage());
     }
 
