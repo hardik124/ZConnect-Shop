@@ -1,8 +1,11 @@
 package zconnectcom.zutto.zconnectshophandle.UI.Activities.Misc;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,7 +36,15 @@ public class logIn extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        final SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (sharedpreferences.contains("ShopKey") && sharedpreferences.contains("ShopName")) {
+            Intent intent = new Intent(logIn.this, home.class);
+            intent.putExtra("ShopKey", sharedpreferences.getString("ShopKey", null));
+            intent.putExtra("ShopName", sharedpreferences.getString("ShopName", null));
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
         logInButton = (Button) findViewById(R.id.login);
         shopCode = (EditText) findViewById(R.id.shopcode);
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Shop/Shopkeepers");
@@ -64,6 +75,7 @@ public class logIn extends BaseActivity {
                             //Auth
                             if (dataSnapshot.hasChild(code)) {
                                 Intent loginIntent = new Intent(logIn.this, home.class);
+                                Log.d("key", dataSnapshot.child(code).child("Key").getValue().toString());
                                 loginIntent.putExtra("ShopKey", dataSnapshot.child(code).child("Key").getValue().toString());
                                 loginIntent.putExtra("ShopName", (dataSnapshot.child(code).child("Name").getValue()).toString());
                                 loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

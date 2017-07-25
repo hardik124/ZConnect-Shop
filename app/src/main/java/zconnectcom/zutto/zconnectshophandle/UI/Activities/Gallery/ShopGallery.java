@@ -26,16 +26,18 @@ public class ShopGallery extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop_menu);
 
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         extras = getIntent().getExtras();
-
         setToolbar();
+        mMenuList = (RecyclerView) findViewById(R.id.menuRV);
+        LinearLayoutManager productLinearLayout = new LinearLayoutManager(getApplicationContext());
+        productLinearLayout.setReverseLayout(true);
+        productLinearLayout.setStackFromEnd(true);
+        mMenuList.setLayoutManager(productLinearLayout);
+
+        mMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Gallery").child(extras.getString("ShopKey"));
+        mMenu.keepSynced(true);
+        initRV();
+
         key = extras.getString("ShopKey");
         showBackButton();
         getSupportActionBar().setTitle(extras.getString("ShopName"));
@@ -51,23 +53,14 @@ public class ShopGallery extends BaseActivity {
 
             }
         });
-        initRV();
-        FirebaseRVAdapter menuAdapt = new FirebaseRVAdapter("Gallery", mMenu, key);
-        mMenuList.setAdapter(menuAdapt.showImage());
+
 
     }
 
+
     void initRV() {
-        mMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(key).child("Gallery");
-
-        mMenuList = (RecyclerView) findViewById(R.id.menuRV);
-
-        mMenuList.setHasFixedSize(true);
-        mMenu.keepSynced(true);
-        LinearLayoutManager productLinearLayout = new LinearLayoutManager(getApplicationContext());
-        productLinearLayout.setReverseLayout(true);
-        productLinearLayout.setStackFromEnd(true);
-        mMenuList.setLayoutManager(productLinearLayout);
+        FirebaseRVAdapter menuAdapt = new FirebaseRVAdapter("Gallery", mMenu, key, this);
+        mMenuList.setAdapter(menuAdapt.showImage());
 
     }
 

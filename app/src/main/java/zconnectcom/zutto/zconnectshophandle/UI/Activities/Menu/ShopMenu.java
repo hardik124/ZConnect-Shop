@@ -29,13 +29,19 @@ public class ShopMenu extends BaseActivity {
         setToolbar();
         showBackButton();
         key = extras.getString("ShopKey");
+
+        mMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Menu").child(extras.getString("ShopKey"));
+        mMenuList = (RecyclerView) findViewById(R.id.menuRV);
+
+        mMenuList.setHasFixedSize(true);
+        mMenu.keepSynced(true);
+        LinearLayoutManager productLinearLayout = new LinearLayoutManager(getApplicationContext());
+        productLinearLayout.setReverseLayout(true);
+        productLinearLayout.setStackFromEnd(true);
+        mMenuList.setLayoutManager(productLinearLayout);
+        initRV();
+
         getSupportActionBar().setTitle(extras.getString("ShopName"));
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -52,25 +58,14 @@ public class ShopMenu extends BaseActivity {
             }
         });
 
-        initRV();
-        FirebaseRVAdapter menuAdapt = new FirebaseRVAdapter("Menu", mMenu, key);
-        mMenuList.setAdapter(menuAdapt.showImage());
-
 
     }
 
+
     void initRV() {
-        mMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(key).child("Menu");
 
-        mMenuList = (RecyclerView) findViewById(R.id.menuRV);
-
-        mMenuList.setHasFixedSize(true);
-        mMenu.keepSynced(true);
-        LinearLayoutManager productLinearLayout = new LinearLayoutManager(getApplicationContext());
-        productLinearLayout.setReverseLayout(true);
-        productLinearLayout.setStackFromEnd(true);
-        mMenuList.setLayoutManager(productLinearLayout);
-
+        FirebaseRVAdapter menuAdapt = new FirebaseRVAdapter("Menu", mMenu, key, this);
+        mMenuList.setAdapter(menuAdapt.showImage());
     }
 
 

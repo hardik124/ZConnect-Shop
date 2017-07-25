@@ -11,6 +11,7 @@ import com.squareup.picasso.Picasso;
 
 import zconnectcom.zutto.zconnectshophandle.R;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Coupons.AddCoupon;
+import zconnectcom.zutto.zconnectshophandle.Utils.statIncrement;
 import zconnectcom.zutto.zconnectshophandle.models.Coupon;
 
 public class CouponViewHolder extends RecyclerView.ViewHolder {
@@ -49,6 +50,8 @@ public class CouponViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 FirebaseDatabase.getInstance().getReference("Shop/Offers").child(couponkey).removeValue();
+                statIncrement statIncrement = new statIncrement("TotalOffers");
+                statIncrement.change(false);
             }
         });
     }

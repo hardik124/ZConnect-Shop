@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/nav_header_height"
         android:background="@drawable/bits"
+        android:contentDescription="header"
         android:orientation="vertical"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -60,9 +61,10 @@
 
         <TextView
             android:id="@+id/userName"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginLeft="15dp"
+            android:layout_weight="0.8"
             android:paddingBottom="5dp"
             android:paddingTop="10dp"
             android:text=""
@@ -70,18 +72,14 @@
             android:textSize="25sp"
             android:textStyle="bold" />
 
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
 
-        </View>
 
         <zconnectcom.zutto.zconnectshophandle.Utils.CircularImageView
             android:id="@+id/UserPic"
-            android:layout_width="80dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="end|right"
+            android:layout_weight="0.2"
             android:gravity="right" />
 
     </LinearLayout>

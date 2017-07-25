@@ -2,8 +2,10 @@ package zconnectcom.zutto.zconnectshophandle.UI.Activities.Misc;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,6 +14,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,10 +28,15 @@ public class logoFlash extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
+        super.onCreate(savedInstanceState);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        FirebaseDatabase.getInstance().goOnline();
         setContentView(R.layout.activity_logo_flash);
         // Setting full screen view
+        final SharedPreferences sharedpreferences = getPreferences(Context.MODE_PRIVATE);
+
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         handlePermission();
     }
@@ -76,7 +85,7 @@ public class logoFlash extends BaseActivity {
         switch (requestCode) {
             case 7:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                   openHome();
+                    openLogin();
                 } else {
                     Toast.makeText(this,"Permission Denied !, Retrying.",Toast.LENGTH_SHORT).show();
                     checkPermission();
@@ -85,7 +94,7 @@ public class logoFlash extends BaseActivity {
         }
     }
 
-    void openHome() {
+    void openLogin() {
         new Timer().schedule(new TimerTask() {
             public void run() {
                 Intent intent = new Intent(logoFlash.this, logIn.class);
@@ -98,9 +107,8 @@ public class logoFlash extends BaseActivity {
 
     void handlePermission() {
         if (checkPermission())
-            openHome();
+            openLogin();
 
     }
-
 }
 

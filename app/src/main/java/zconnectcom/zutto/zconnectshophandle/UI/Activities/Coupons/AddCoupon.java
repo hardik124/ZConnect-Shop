@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import zconnectcom.zutto.zconnectshophandle.R;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Base.BaseActivity;
 import zconnectcom.zutto.zconnectshophandle.Utils.IntentHandle;
+import zconnectcom.zutto.zconnectshophandle.Utils.statIncrement;
 import zconnectcom.zutto.zconnectshophandle.models.Coupon;
 
 public class AddCoupon extends BaseActivity {
@@ -38,7 +40,7 @@ public class AddCoupon extends BaseActivity {
     Bundle extras;
     IntentHandle intentHandle;
     Button mPost;
-    String key;
+    String key, recentskey;
     EditText etName, etDesc;
     Boolean changeImage = false;
     Uri mImageUri = null;
@@ -50,13 +52,13 @@ public class AddCoupon extends BaseActivity {
 
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         extras = getIntent().getExtras();
+        Log.d("key", extras.getString("ShopKey"));
         setToolbar();
 
         initViews();
         getSupportActionBar().setTitle(R.string.title_activity_add_coupon);
         showBackButton();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        extras = getIntent().getExtras();
         ImageViewClickListener();
         checkType();
 
@@ -98,12 +100,8 @@ public class AddCoupon extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-            try {
-                mImageUri = intentHandle.getPickImageResultUri(data);
-            } catch (Exception e) {
-                showSnack("Cannot select image , Retry");
-            }
-            CropImage.activity(mImageUri)
+            Uri imageUri = intentHandle.getPickImageResultUri(data);
+            CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setSnapRadius(2)
                     .start(this);
@@ -113,7 +111,7 @@ public class AddCoupon extends BaseActivity {
             if (resultCode == RESULT_OK) {
                 try {
                     mImageUri = result.getUri();
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    Bitmap bitmap2 = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                     Double ratio = Math.ceil(100000.0 / bitmap.getByteCount());
                     bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
@@ -122,19 +120,17 @@ public class AddCoupon extends BaseActivity {
                     mImageUri = Uri.parse(path);
                     mImage.setImageURI(mImageUri);
 
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
-                showSnack(error.getMessage());
             }
         }
 
-
     }
+
 
     void onClickPost() {
         final String cName = etName.getText().toString();
@@ -199,16 +195,32 @@ public class AddCoupon extends BaseActivity {
 
     void setData(final String cName, final String cDesc, String image) {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop/Offers");
-        if (extras.containsKey("Coupon"))
+        DatabaseReference mRecents = FirebaseDatabase.getInstance().getReference().child("home");
+        if (extras.containsKey("Coupon")) {
             mDatabase = mDatabase.child(key);
-        else
+            mRecents = mRecents.child(recentskey);
+        }
+        else {
             mDatabase = mDatabase.push();
-
+            mRecents = mRecents.push();
+            recentskey = mRecents.getKey();
+            statIncrement statIncrement = new statIncrement("TotalOffers");
+            statIncrement.change(true);
+        }
+        {
+            mRecents.child("imageurl").setValue(image);
+            mRecents.child("name").setValue(cName);
+            mRecents.child("desc").setValue(cDesc);
+            mRecents.child("id").setValue(extras.getString("ShopKey"));
+            mRecents.child("desc2").setValue(extras.getString("ShopKey"));
+            mRecents.child("feature").setValue("Shop");
+        }
         mDatabase.child("image").setValue(image);
         mDatabase.child("key").setValue(mDatabase.getKey());
         mDatabase.child("name").setValue(cName);
         mDatabase.child("desc").setValue(cDesc);
-        mDatabase.child("ShopKey").setValue(extras.getString("ShopKey"));
+        mDatabase.child("shopKey").setValue(extras.getString("ShopKey"));
+        mDatabase.child("recentsKey").setValue(recentskey);
         hideProgressDialog();
         finish();
     }
@@ -218,6 +230,7 @@ public class AddCoupon extends BaseActivity {
             Coupon coupon = (Coupon) extras.get("Coupon");
             setActionBarTitle(coupon.getName());
             key = coupon.getKey();
+            recentskey = coupon.getRecentsKey();
             inflateViews();
         } else {
             setActionBarTitle("Add coupon");

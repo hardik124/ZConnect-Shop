@@ -15,6 +15,7 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/border"
         android:minHeight="180dp"
+        android:contentDescription="Offer image"
         android:paddingBottom="15dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"

@@ -11,6 +11,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,10 +51,10 @@ import zconnectcom.zutto.zconnectshophandle.models.ShopDetailsItem;
 
 public class ShopDetails extends BaseActivity {
     final int GALLERY_REQUEST = 7;
-    EditText name, details, number, address, et_code;
+    EditText name, details, number, address, et_code, et_title;
     LinearLayout linearLayout, numberlayout;
     CircularImageView image;
-    String nam, detail, lat, lon, imageurl, num, menuurl, shopid = null, shopAdd, code;
+    String nam, detail, lat, lon, imageurl, num, menuurl, shopid = null, shopAdd, code, couponTitle;
     DatabaseReference mDatabase, mDatabaseMenu;
     HorizontalScrollView galleryScroll, menuScroll;
     Button done, mapBtn;
@@ -85,6 +86,7 @@ public class ShopDetails extends BaseActivity {
         initLayout();
         setbuttons();
         setData();
+        setGalleryAndMenu();
 
 
     }
@@ -92,7 +94,8 @@ public class ShopDetails extends BaseActivity {
     void initLayout() {
         name = (EditText) findViewById(R.id.shop_details_name);
         details = (EditText) findViewById(R.id.shop_details_details);
-        et_code = (EditText) findViewById(R.id.et_offer);
+        et_code = (EditText) findViewById(R.id.et_offer_code);
+        et_title = (EditText) findViewById(R.id.et_offer_title);
         numberlayout = (LinearLayout) findViewById(R.id.shop_details_num);
         linearLayout = (LinearLayout) findViewById(R.id.shop_details_directions);
         number = (EditText) findViewById(R.id.shop_details_number);
@@ -104,12 +107,6 @@ public class ShopDetails extends BaseActivity {
         galleryScroll.setHorizontalScrollBarEnabled(false);
         menuScroll.setHorizontalScrollBarEnabled(false);
         address = (EditText) findViewById(R.id.address);
-
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(ShopKey).child("Gallery");
-        mDatabaseMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(ShopKey).child("Menu");
-
-        mDatabase.keepSynced(true);
-        mDatabaseMenu.keepSynced(true);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         galleryRecycler = (RecyclerView) findViewById(R.id.galleryRecycler);
@@ -179,9 +176,9 @@ public class ShopDetails extends BaseActivity {
     }
 
     void setData() {
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("Shop/Shops");
+        DatabaseReference mData = FirebaseDatabase.getInstance().getReference("Shop/Shops");
         final ShopDetailsItem[] item = new ShopDetailsItem[1];
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+        mData.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
@@ -197,6 +194,9 @@ public class ShopDetails extends BaseActivity {
                     shopid = item[0].getShopid();
                     shopAdd = item[0].getAddress();
                     code = item[0].getCode();
+                    couponTitle = item[0].getCouponTitle();
+
+
                     initData();
 
                 } catch (Exception e) {
@@ -222,6 +222,7 @@ public class ShopDetails extends BaseActivity {
         name.setText(nam);
         et_code.setText(code);
         details.setText(detail);
+        et_title.setText(couponTitle);
         Picasso.with(ShopDetails.this).load(imageurl).into(image);
 //            menu.setImageURI(Uri.parse(menuurl));
         number.setText(num);
@@ -241,14 +242,14 @@ public class ShopDetails extends BaseActivity {
         });
 
 
+
     }
 
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-
+    void setGalleryAndMenu() {
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child("Gallery").child(ShopKey);
+        mDatabaseMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Menu").child(ShopKey);
+        mDatabase.keepSynced(true);
+        mDatabaseMenu.keepSynced(true);
         FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder>(
                 GalleryFormat.class,
                 R.layout.gallery_row,
@@ -284,16 +285,20 @@ public class ShopDetails extends BaseActivity {
     void updateData() {
         showProgressDialog();
         final DatabaseReference newData = FirebaseDatabase.getInstance().getReference().child("Shop/Shops").child(ShopKey);
-        if (name.getText().toString().compareTo(nam) != 0)
+        try {
+            if (nam == null || name.getText().toString().compareTo(nam) != 0)
             newData.child("name").setValue(name.getText().toString());
-        if (name.getText().toString().compareTo(num) != 0)
+            if (num != null || number.getText().toString().compareTo(num) != 0)
             newData.child("number").setValue(number.getText().toString());
 
-        if (name.getText().toString().compareTo(detail) != 0)
+            if (detail == null || details.getText().toString().compareTo(detail) != 0)
             newData.child("details").setValue(details.getText().toString());
 
-        if (name.getText().toString().compareTo(code) != 0)
+            if (code == null || et_code.getText().toString().compareTo(code) != 0)
             newData.child("code").setValue(et_code.getText().toString());
+
+            if (couponTitle == null || et_title.getText().toString().compareTo(couponTitle) != 0)
+            newData.child("couponTitle").setValue(et_title.getText().toString());
 
         if (imageChanged) {
             StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("Shops");
@@ -311,9 +316,14 @@ public class ShopDetails extends BaseActivity {
             newData.child("lon").setValue(String.valueOf(latLng.longitude));
             newData.child("lat").setValue(String.valueOf(latLng.latitude));
         }
-        newData.child("address").setValue(address.getText().toString().replace(".", ""));
-        hideProgressDialog();
+            if (shopAdd == null || !address.getText().equals(shopAdd))
+                newData.child("address").setValue(address.getText().toString().replace(".", " ").replace("/", "-"));
         showSnack("Updated Successfully");
+        } catch (Exception e) {
+            Log.d("Error updating", e.getMessage());
+        }
+        hideProgressDialog();
+
     }
 
     @Override

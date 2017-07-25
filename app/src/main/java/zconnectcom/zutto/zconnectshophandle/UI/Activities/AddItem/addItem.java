@@ -86,10 +86,9 @@ public class addItem extends BaseActivity {
 
 
     void setData(final String cName, String image) {
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop/Shops").child(key).child(type).push();
-        mDatabase.child("ImageUrl").setValue(image);
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child(type).child(key).push();
+        mDatabase.child("imageurl").setValue(image);
         mDatabase.child("key").setValue(mDatabase.getKey());
-        mDatabase.child("ImageName").setValue(cName);
         hideProgressDialog();
         finish();
     }

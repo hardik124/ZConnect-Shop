@@ -9,7 +9,7 @@ public class ShopDetailsItem {
     String lon;
     String menuurl;
     String cat;
-    String shopid, address, code;
+    String shopid, address, code, couponTitle;
 
 
     public ShopDetailsItem(String name, String code, String shopid, String number, String imageurl, String lat, String details, String lon, String menuurl, String cat, String address) {
@@ -24,10 +24,15 @@ public class ShopDetailsItem {
         this.shopid = shopid;
         this.address = address;
         this.code = code;
+        this.couponTitle = couponTitle;
     }
 
 
     public ShopDetailsItem() {
+    }
+
+    public String getCouponTitle() {
+        return couponTitle;
     }
 
     public String getShopid() {
