@@ -23,7 +23,7 @@
             android:orientation="vertical"
             android:weightSum="1">
 
-            <zconnectcom.zutto.zconnectshophandle.Utils.CircularImageView
+            <ImageView
                 android:id="@+id/shop_details_image"
                 android:layout_width="100dp"
                 android:layout_height="100dp"

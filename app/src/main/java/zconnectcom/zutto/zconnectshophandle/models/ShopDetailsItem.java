@@ -31,20 +31,20 @@ public class ShopDetailsItem {
     public ShopDetailsItem() {
     }
 
-    public String getCouponTitle() {
-        return couponTitle;
+    public String getName() {
+        return name;
     }
 
-    public String getShopid() {
-        return shopid;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getCat() {
-        return cat;
+    public String getNumber() {
+        return number;
     }
 
-    public void setCat(String cat) {
-        this.cat = cat;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public String getImageurl() {
@@ -55,6 +55,30 @@ public class ShopDetailsItem {
         this.imageurl = imageurl;
     }
 
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
+
+    public String getLon() {
+        return lon;
+    }
+
+    public void setLon(String lon) {
+        this.lon = lon;
+    }
+
     public String getMenuurl() {
         return menuurl;
     }
@@ -63,52 +87,44 @@ public class ShopDetailsItem {
         this.menuurl = menuurl;
     }
 
-    public String getLon() {
-
-        return lon;
+    public String getCat() {
+        return cat;
     }
 
-
-    public String getDetails() {
-
-        return details;
+    public void setCat(String cat) {
+        this.cat = cat;
     }
 
-    public void setDetails(String details) {
-        this.details = details;
+    public String getShopid() {
+        return shopid;
     }
 
-    public String getLat() {
-
-        return lat;
-    }
-
-    public String getNumber() {
-
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getName() {
-
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCode() {
-
-        return code;
+    public void setShopid(String shopid) {
+        this.shopid = shopid;
     }
 
     public String getAddress() {
         return address;
     }
 
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getCouponTitle() {
+        return couponTitle;
+    }
+
+    public void setCouponTitle(String couponTitle) {
+        this.couponTitle = couponTitle;
+    }
 }
 

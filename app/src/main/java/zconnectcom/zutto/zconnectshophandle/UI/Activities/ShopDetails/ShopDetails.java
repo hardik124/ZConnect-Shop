@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -44,32 +43,19 @@ import zconnectcom.zutto.zconnectshophandle.R;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Base.BaseActivity;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Gallery.ShopGallery;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Menu.ShopMenu;
-import zconnectcom.zutto.zconnectshophandle.Utils.CircularImageView;
 import zconnectcom.zutto.zconnectshophandle.Utils.IntentHandle;
 import zconnectcom.zutto.zconnectshophandle.models.GalleryFormat;
 import zconnectcom.zutto.zconnectshophandle.models.ShopDetailsItem;
 
 public class ShopDetails extends BaseActivity {
-    final int GALLERY_REQUEST = 7;
-    EditText name, details, number, address, et_code, et_title;
-    LinearLayout linearLayout, numberlayout;
-    CircularImageView image;
-    String nam, detail, lat, lon, imageurl, num, menuurl, shopid = null, shopAdd, code, couponTitle;
-    DatabaseReference mDatabase, mDatabaseMenu;
-    HorizontalScrollView galleryScroll, menuScroll;
-    Button done, mapBtn;
-    String ShopKey;
-    GalleryAdapter adapter;
-    RecyclerView galleryRecycler;
-    RecyclerView menuRecycler;
-    IntentHandle intentHandle;
-    Uri mImageUri;
-    Button menuBtn, GalBtn;
-    Boolean imageChanged = false;
-    Bundle extras;
-    Intent shopAddress;
-    Place Venue;
-    Boolean selectedFromMap = false;
+    private final int GALLERY_REQUEST = 7;
+    private EditText name, details, number, address, et_code, et_title;
+    private ImageView image;
+    private ShopDetailsItem item = new ShopDetailsItem();
+    private String ShopKey;
+    private IntentHandle intentHandle;
+    private Uri mImageUri;
+    private Bundle extras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,31 +82,20 @@ public class ShopDetails extends BaseActivity {
         details = (EditText) findViewById(R.id.shop_details_details);
         et_code = (EditText) findViewById(R.id.et_offer_code);
         et_title = (EditText) findViewById(R.id.et_offer_title);
-        numberlayout = (LinearLayout) findViewById(R.id.shop_details_num);
-        linearLayout = (LinearLayout) findViewById(R.id.shop_details_directions);
-        number = (EditText) findViewById(R.id.shop_details_number);
-        image = (CircularImageView) findViewById(R.id.shop_details_image);
-        menuBtn = (Button) findViewById(R.id.editPro);
-        mapBtn = (Button) findViewById(R.id.mapButton);
-        galleryScroll = (HorizontalScrollView) findViewById(R.id.galleryScroll);
-        menuScroll = (HorizontalScrollView) findViewById(R.id.menuScroll);
-        galleryScroll.setHorizontalScrollBarEnabled(false);
-        menuScroll.setHorizontalScrollBarEnabled(false);
-        address = (EditText) findViewById(R.id.address);
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        galleryRecycler = (RecyclerView) findViewById(R.id.galleryRecycler);
-        galleryRecycler.setLayoutManager(layoutManager);
 
-        LinearLayoutManager layoutManagerMenu = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        menuRecycler = (RecyclerView) findViewById(R.id.menuRecycler);
-        menuRecycler.setLayoutManager(layoutManagerMenu);
-        GalBtn = (Button) findViewById(R.id.editGal);
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbarLayout);
-        done = (Button) appBarLayout.findViewById(R.id.Btndone);
+
+        number = (EditText) findViewById(R.id.shop_details_number);
+        image = (ImageView) findViewById(R.id.shop_details_image);
+
+        address = (EditText) findViewById(R.id.address);
+
     }
 
     void setbuttons() {
+
+        Button menuBtn, GalBtn;
+        GalBtn = (Button) findViewById(R.id.editGal);
+        menuBtn = (Button) findViewById(R.id.editPro);
         menuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,9 +124,15 @@ public class ShopDetails extends BaseActivity {
             @Override
             public void onClick(View v) {
                 intentHandle = new IntentHandle();
-                startActivityForResult(intentHandle.getPickImageIntent(getApplicationContext()), GALLERY_REQUEST);
+                startActivityForResult(intentHandle.getPickImageIntent(ShopDetails.this), GALLERY_REQUEST);
             }
         });
+
+        Button done, mapBtn;
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbarLayout);
+
+        done = (Button) appBarLayout.findViewById(R.id.Btndone);
+        mapBtn = (Button) findViewById(R.id.mapButton);
 
         done.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,8 +147,7 @@ public class ShopDetails extends BaseActivity {
                 LatLngBounds bitsGoa = new LatLngBounds(new LatLng(15.386095, 73.876165), new LatLng(15.396108, 73.878407));
                 builder.setLatLngBounds(bitsGoa);
                 try {
-                    shopAddress = builder.build(ShopDetails.this);
-                    selectAddress();
+                    startActivityForResult(builder.build(ShopDetails.this), 124);
                 } catch (Exception e) {
                     showSnack("Cannot open Maps , Please input your venue.", Snackbar.LENGTH_LONG);
                 }
@@ -177,33 +157,18 @@ public class ShopDetails extends BaseActivity {
 
     void setData() {
         DatabaseReference mData = FirebaseDatabase.getInstance().getReference("Shop/Shops");
-        final ShopDetailsItem[] item = new ShopDetailsItem[1];
         mData.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
 
-                    item[0] = dataSnapshot.child(ShopKey).getValue(ShopDetailsItem.class);
-                    nam = item[0].getName();
-                    detail = item[0].getDetails();
-                    lat = item[0].getLat();
-                    lon = item[0].getLon();
-                    imageurl = item[0].getImageurl();
-                    menuurl = item[0].getMenuurl();
-                    num = item[0].getNumber();
-                    shopid = item[0].getShopid();
-                    shopAdd = item[0].getAddress();
-                    code = item[0].getCode();
-                    couponTitle = item[0].getCouponTitle();
-
-
+                    item = dataSnapshot.child(ShopKey).getValue(ShopDetailsItem.class);
                     initData();
 
                 } catch (Exception e) {
                     showSnack("Shop details not available , add now .");
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -217,27 +182,33 @@ public class ShopDetails extends BaseActivity {
     void initData() {
         name.setEnabled(false);
         number.setPaintFlags(number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        number.setText(num);
-        address.setText(shopAdd);
-        name.setText(nam);
-        et_code.setText(code);
-        details.setText(detail);
-        et_title.setText(couponTitle);
-        Picasso.with(ShopDetails.this).load(imageurl).into(image);
+        number.setText(item.getNumber());
+        address.setText(item.getAddress());
+        name.setText(item.getName());
+        et_code.setText(item.getCode());
+        details.setText(item.getDetails());
+        et_title.setText(item.getCouponTitle());
+        Picasso.with(ShopDetails.this).load(item.getImageurl()).into(image);
 //            menu.setImageURI(Uri.parse(menuurl));
-        number.setText(num);
+
+        LinearLayout linearLayout, numberlayout;
+
+        numberlayout = (LinearLayout) findViewById(R.id.shop_details_num);
+        linearLayout = (LinearLayout) findViewById(R.id.shop_details_directions);
+
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?q=loc:" + item.getLat() + "," + item.getLon()));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setPackage("com.google.android.apps.maps");
                 startActivity(intent);
             }
         });
         numberlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + num)));
+                startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + item.getNumber())));
             }
         });
 
@@ -246,6 +217,8 @@ public class ShopDetails extends BaseActivity {
     }
 
     void setGalleryAndMenu() {
+        DatabaseReference mDatabase, mDatabaseMenu;
+
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child("Gallery").child(ShopKey);
         mDatabaseMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Menu").child(ShopKey);
         mDatabase.keepSynced(true);
@@ -263,6 +236,19 @@ public class ShopDetails extends BaseActivity {
                 viewHolder.setImage(getApplicationContext(), model.getImage());
             }
         };
+
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        RecyclerView galleryRecycler;
+        RecyclerView menuRecycler;
+        galleryRecycler = (RecyclerView) findViewById(R.id.galleryRecycler);
+        galleryRecycler.setLayoutManager(layoutManager);
+
+        LinearLayoutManager layoutManager1
+                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        menuRecycler = (RecyclerView) findViewById(R.id.menuRecycler);
+        menuRecycler.setLayoutManager(layoutManager1);
+
         galleryRecycler.setAdapter(firebaseRecyclerAdapter);
         FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder> firebaseRecyclerAdapterMenu = new FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder>(
                 GalleryFormat.class,
@@ -286,39 +272,15 @@ public class ShopDetails extends BaseActivity {
         showProgressDialog();
         final DatabaseReference newData = FirebaseDatabase.getInstance().getReference().child("Shop/Shops").child(ShopKey);
         try {
-            if (nam == null || name.getText().toString().compareTo(nam) != 0)
-            newData.child("name").setValue(name.getText().toString());
-            if (num != null || number.getText().toString().compareTo(num) != 0)
-            newData.child("number").setValue(number.getText().toString());
+            item.setName(name.getText().toString());
+            item.setNumber(number.getText().toString());
+            item.setAddress(address.getText().toString().replace(".", " ").replace("/", "-"));
+            item.setDetails(details.getText().toString());
+            item.setCode(et_code.getText().toString());
+            item.setCouponTitle(et_title.getText().toString());
 
-            if (detail == null || details.getText().toString().compareTo(detail) != 0)
-            newData.child("details").setValue(details.getText().toString());
-
-            if (code == null || et_code.getText().toString().compareTo(code) != 0)
-            newData.child("code").setValue(et_code.getText().toString());
-
-            if (couponTitle == null || et_title.getText().toString().compareTo(couponTitle) != 0)
-            newData.child("couponTitle").setValue(et_title.getText().toString());
-
-        if (imageChanged) {
-            StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("Shops");
-            final StorageReference filepath = mStorage.child(nam);
-            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    String imageUrl = taskSnapshot.getDownloadUrl().toString();
-                    newData.child("imageurl").setValue(imageUrl);
-                }
-            });
-        }
-        if (selectedFromMap) {
-            LatLng latLng = Venue.getLatLng();
-            newData.child("lon").setValue(String.valueOf(latLng.longitude));
-            newData.child("lat").setValue(String.valueOf(latLng.latitude));
-        }
-            if (shopAdd == null || !address.getText().equals(shopAdd))
-                newData.child("address").setValue(address.getText().toString().replace(".", " ").replace("/", "-"));
-        showSnack("Updated Successfully");
+            newData.setValue(item);
+            showSnack("Updated Successfully");
         } catch (Exception e) {
             Log.d("Error updating", e.getMessage());
         }
@@ -339,7 +301,6 @@ public class ShopDetails extends BaseActivity {
             CropImage.activity(mImageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setSnapRadius(2)
-                    .setAspectRatio(3, 2)
                     .start(this);
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -349,12 +310,23 @@ public class ShopDetails extends BaseActivity {
                     mImageUri = result.getUri();
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 15, out);
+                    Double ratio = Math.ceil(150000.0 / bitmap.getByteCount());
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
                     String path = MediaStore.Images.Media.insertImage(ShopDetails.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
                     image.setImageURI(mImageUri);
-                    imageChanged = true;
+
+
+                    StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("Shops");
+                    final StorageReference filepath = mStorage.child("Cover");
+                    filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            String imageUrl = taskSnapshot.getDownloadUrl().toString();
+                            item.setImageurl(imageUrl);
+                        }
+                    });
 
 
                 } catch (IOException e) {
@@ -369,18 +341,17 @@ public class ShopDetails extends BaseActivity {
 
 
         if (requestCode == 124 && resultCode == RESULT_OK) {
-            Venue = PlacePicker.getPlace(this, data);
-            address.setText(Venue.getName().toString() + Venue.getAddress());
-            selectedFromMap = true;
+            Place addr = PlacePicker.getPlace(this, data);
+            item.setLat(String.valueOf(addr.getLatLng().latitude));
+            item.setLon(String.valueOf(addr.getLatLng().longitude));
+
+            address.setText(addr.getName().toString() + addr.getAddress());
         }
 
 
 
     }
 
-    void selectAddress() {
-        startActivityForResult(shopAddress, 124);
-    }
 
     private static class GalleryViewHolder extends RecyclerView.ViewHolder {
 

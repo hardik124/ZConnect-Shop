@@ -21,23 +21,19 @@
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
-                android:layout_width="250dp"
+                android:layout_width="0dp"
                 android:layout_height="?attr/actionBarSize"
+                android:layout_weight="0.8"
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-            </View>
 
 
             <Button
                 android:id="@+id/Btndone"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="0.2"
                 android:background="@color/teal900"
                 android:text="OK"
                 android:textColor="@color/white"
