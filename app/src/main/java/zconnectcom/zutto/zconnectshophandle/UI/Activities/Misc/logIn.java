@@ -20,6 +20,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import zconnectcom.zutto.zconnectshophandle.R;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Base.BaseActivity;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Coupons.home;
@@ -74,6 +77,13 @@ public class logIn extends BaseActivity {
                         public void onDataChange(final DataSnapshot dataSnapshot) {
                             //Auth
                             if (dataSnapshot.hasChild(code)) {
+
+                                new Timer().schedule(new TimerTask() {
+                                    public void run() {
+                                        hideProgressDialog();
+                                        showSnack("Connection timeout");
+                                    }
+                                }, 6000);
                                 Intent loginIntent = new Intent(logIn.this, home.class);
                                 Log.d("key", dataSnapshot.child(code).child("Key").getValue().toString());
                                 loginIntent.putExtra("ShopKey", dataSnapshot.child(code).child("Key").getValue().toString());

@@ -18,7 +18,6 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import zconnectcom.zutto.zconnectshophandle.R;
@@ -121,14 +120,19 @@ public class addItem extends BaseActivity {
             if (resultCode == RESULT_OK) {
                 try {
                     mImageUri = result.getUri();
+                    mImage.setImageURI(mImageUri);
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    Double ratio = Math.ceil(250000.0 / bitmap.getByteCount());
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
+                    Double ratio = ((double) bitmap.getWidth()) / bitmap.getHeight();
+
+                    if (bitmap.getByteCount() > 350000) {
+
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 960, (int) (960 / ratio), false);
+                    }
                     String path = MediaStore.Images.Media.insertImage(addItem.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
                     mImage.setImageURI(mImageUri);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

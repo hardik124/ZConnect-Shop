@@ -1,7 +1,5 @@
 package zconnectcom.zutto.zconnectshophandle.Utils;
 
-import android.widget.Toast;
-
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 
@@ -34,9 +32,6 @@ public class FirebaseRVAdapter {
         ) {
             @Override
             protected void populateViewHolder(ImageViewHolder viewHolder, GalleryFormat model, int position) {
-                Toast.makeText(viewHolder.itemView.getContext(), "ShopName" + (ShopName == null), Toast.LENGTH_SHORT).show();
-                Toast.makeText(viewHolder.itemView.getContext(), "ShopKey" + (key == null), Toast.LENGTH_SHORT).show();
-
                 viewHolder.setData(key, type, ShopName);
                 viewHolder.setDelButton(model.getKey(), model.getName());
                 viewHolder.setImage(model.getImage());

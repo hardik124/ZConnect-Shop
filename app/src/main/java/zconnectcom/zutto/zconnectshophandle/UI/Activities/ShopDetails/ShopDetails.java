@@ -253,7 +253,7 @@ public class ShopDetails extends BaseActivity {
         FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder> firebaseRecyclerAdapterMenu = new FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder>(
                 GalleryFormat.class,
                 R.layout.gallery_row,
-                GalleryViewHolder.class,
+                ShopDetails.GalleryViewHolder.class,
                 mDatabaseMenu
         ) {
 
@@ -353,21 +353,14 @@ public class ShopDetails extends BaseActivity {
     }
 
 
-    private static class GalleryViewHolder extends RecyclerView.ViewHolder {
-
-        View mView;
-
+    public static class GalleryViewHolder extends RecyclerView.ViewHolder {
         public GalleryViewHolder(View itemView) {
             super(itemView);
-            mView = itemView;
         }
-
         void setImage(Context ctx, String ImageUrl) {
 
-            ImageView imageHolder = (ImageView) mView.findViewById(R.id.galleryImage);
+            ImageView imageHolder = (ImageView) itemView.findViewById(R.id.galleryImage);
             Picasso.with(ctx).load(ImageUrl).into(imageHolder);
-
-
         }
 
     }

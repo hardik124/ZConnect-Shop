@@ -199,12 +199,12 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String url = (String) dataSnapshot.child("imageurl").getValue();
                 if (url != null) {
-                    Picasso.with(getApplicationContext()).load(url).into((ImageView) findViewById(R.id.UserPic));
-                    Picasso.with(getApplicationContext()).load((String) dataSnapshot.child("imageurl").getValue()).into(new Target() {
+                    Picasso.with(home.this).load((String) dataSnapshot.child("imageurl").getValue()).into(new Target() {
                         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                         @Override
                         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                             findViewById(R.id.navHeader).setBackground(new BitmapDrawable(getApplicationContext().getResources(), bitmap));
+                            ((ImageView) findViewById(R.id.UserPic)).setImageBitmap(bitmap);
                         }
 
                         @Override
