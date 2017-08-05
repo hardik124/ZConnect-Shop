@@ -1,6 +1,7 @@
 package zconnectcom.zutto.zconnectshophandle.UI.Activities.ShopDetails;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
@@ -9,10 +10,13 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,6 +28,7 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.vision.text.Text;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,17 +37,20 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import zconnectcom.zutto.zconnectshophandle.R;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Base.BaseActivity;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Gallery.ShopGallery;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.Menu.ShopMenu;
+import zconnectcom.zutto.zconnectshophandle.UI.Activities.Misc.AddShop;
 import zconnectcom.zutto.zconnectshophandle.Utils.IntentHandle;
 import zconnectcom.zutto.zconnectshophandle.models.GalleryFormat;
 import zconnectcom.zutto.zconnectshophandle.models.ShopDetailsItem;
@@ -63,7 +71,6 @@ public class ShopDetails extends BaseActivity {
         setContentView(R.layout.activity_shop_details);
         extras = getIntent().getExtras();
         ShopKey = extras.getString("ShopKey");
-
         setToolbar();
         setTitle(extras.getString("ShopName") + "- Edit Details");
         showBackButton();
@@ -153,6 +160,42 @@ public class ShopDetails extends BaseActivity {
                 }
             }
         });
+
+        final Button category = (Button) findViewById(R.id.category);
+
+        category.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                showProgressDialog();
+                final ArrayList<String> names = new ArrayList();
+                FirebaseDatabase.getInstance().getReference("Shop").child("Category").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot:dataSnapshot.getChildren()) {
+                            names.add(snapshot.child("category").getValue().toString());
+                        }
+                        hideProgressDialog();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ShopDetails.this);
+                        builder.setTitle("Select Category")
+                                .setItems(names.toArray(new String[names.size()]), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        item.setCat(names.get(which));
+                                        category.setText(names.get(which));
+                                    }
+                                })
+                                .setCancelable(true)
+                                .show();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+
     }
 
     void setData() {
@@ -163,6 +206,8 @@ public class ShopDetails extends BaseActivity {
                 try {
 
                     item = dataSnapshot.child(ShopKey).getValue(ShopDetailsItem.class);
+                    if(item == null)
+                        item = new ShopDetailsItem();
                     initData();
 
                 } catch (Exception e) {
@@ -180,7 +225,7 @@ public class ShopDetails extends BaseActivity {
 
 
     void initData() {
-        name.setEnabled(false);
+
         number.setPaintFlags(number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         number.setText(item.getNumber());
         address.setText(item.getAddress());
@@ -188,7 +233,21 @@ public class ShopDetails extends BaseActivity {
         et_code.setText(item.getCode());
         details.setText(item.getDetails());
         et_title.setText(item.getCouponTitle());
-        Picasso.with(ShopDetails.this).load(item.getImageurl()).into(image);
+
+        if(URLUtil.isValidUrl(item.getImageurl())) {
+            Picasso.with(ShopDetails.this).load(item.getImageurl()).into(image, new Callback() {
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError() {
+                    image.setImageResource(R.drawable.ic_material_user_icon_black_24dp);
+                }
+            });
+        } else
+            image.setImageResource(R.drawable.ic_material_user_icon_black_24dp);
 //            menu.setImageURI(Uri.parse(menuurl));
 
         LinearLayout linearLayout, numberlayout;
@@ -269,20 +328,32 @@ public class ShopDetails extends BaseActivity {
     }
 
     void updateData() {
-        showProgressDialog();
         final DatabaseReference newData = FirebaseDatabase.getInstance().getReference().child("Shop/Shops").child(ShopKey);
         try {
             item.setName(name.getText().toString());
             item.setNumber(number.getText().toString());
-            item.setAddress(address.getText().toString().replace(".", " ").replace("/", "-"));
+            item.setAddress(address.getText().toString());
             item.setDetails(details.getText().toString());
             item.setCode(et_code.getText().toString());
             item.setCouponTitle(et_title.getText().toString());
 
+            if(TextUtils.isEmpty(item.getCat()))
+            {
+                showSnack("Please select category");
+                return;
+            }
+            else if(TextUtils.isEmpty(item.getName()))
+
+            {
+                showSnack("Please enter name");
+                return;
+            }
+
             newData.setValue(item);
-            showSnack("Updated Successfully");
+            showToast("Updated Successfully");
         } catch (Exception e) {
-            Log.d("Error updating", e.getMessage());
+            Log.d("Error",e.getMessage());
+            showToast("Error updating");
         }
         hideProgressDialog();
 

@@ -1,14 +1,18 @@
 package zconnectcom.zutto.zconnectshophandle.UI.Activities.Coupons;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -38,6 +42,7 @@ import zconnectcom.zutto.zconnectshophandle.UI.Activities.Misc.AboutUs;
 import zconnectcom.zutto.zconnectshophandle.UI.Activities.ShopDetails.ShopDetails;
 import zconnectcom.zutto.zconnectshophandle.ViewHolder.CouponViewHolder;
 import zconnectcom.zutto.zconnectshophandle.models.Coupon;
+import zconnectcom.zutto.zconnectshophandle.UI.Activities.Misc.logIn;
 
 public class home extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -145,6 +150,7 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressLint("ApplySharedPref")
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -165,6 +171,12 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
 //            startActivity(menu);
 
         } else if (id == R.id.signOut) {
+            SharedPreferences.Editor editor = getSharedPreferences("Shop",MODE_PRIVATE).edit();
+            editor.remove("ShopKey");
+            editor.remove("ShopName");
+            editor.commit();
+
+            startActivity(new Intent(this,logIn.class));
             finish();
 
         } else if (id == R.id.about) {
@@ -218,7 +230,7 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
                         }
                     });
                 } else
-                    ((ImageView) findViewById(R.id.UserPic)).setImageDrawable(getResources().getDrawable(R.drawable.ic_material_user_icon_black_24dp));
+                    ((ImageView) findViewById(R.id.UserPic)).setImageDrawable(ContextCompat.getDrawable(home.this,R.drawable.ic_material_user_icon_black_24dp));
                 String name = (String) (dataSnapshot.child("name").getValue() == null ? "N/A" : dataSnapshot.child("name").getValue());
                 ((TextView) findViewById(R.id.userName)).setText(name);
             }

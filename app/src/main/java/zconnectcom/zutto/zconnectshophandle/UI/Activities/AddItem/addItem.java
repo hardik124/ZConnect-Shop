@@ -45,7 +45,8 @@ public class addItem extends BaseActivity {
         type = extras.getString("type");
         key = extras.getString("ShopKey");
         shopName = (extras.getString("ShopName"));
-
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
+        findViewById(R.id.card).setVisibility(View.VISIBLE);
         getSupportActionBar().setTitle(shopName);
         mImage = (ImageView) findViewById(R.id.imgDisplay);
         mImage.setImageResource(R.drawable.addimage);

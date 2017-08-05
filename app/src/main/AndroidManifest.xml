@@ -39,6 +39,12 @@
             android:name=".UI.Activities.Misc.logIn"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".UI.Activities.Misc.AddShop"
+            android:label="@string/title_activity_home"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".UI.Activities.Coupons.AddCoupon"
             android:label="@string/title_activity_add_coupon"
