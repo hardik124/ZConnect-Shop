@@ -28,6 +28,11 @@
     <string name="title_activity_shop_menu">ShopMenu</string>
     <string name="title_activity_nav_bar">NavBar</string>
     <string name="title_activity_add_menu_item">addMenuItem</string>
+    <string name="choose_shop_code">Choose Shop Code</string>
+    <string name="shop_name">Shop Name</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="shopCode">Please enter a shop code</string>
+    <string name="shopNameAlert">Please enter shop name</string>
 
 
 </resources>

@@ -28,11 +28,12 @@ public class logoFlash extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+        try {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        } catch (Exception e) {}
 
         super.onCreate(savedInstanceState);
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        FirebaseDatabase.getInstance().goOnline();
         setContentView(R.layout.activity_logo_flash);
         // Setting full screen view
         final SharedPreferences sharedpreferences = getPreferences(Context.MODE_PRIVATE);
