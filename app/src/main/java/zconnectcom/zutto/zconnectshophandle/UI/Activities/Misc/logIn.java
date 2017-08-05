@@ -1,7 +1,9 @@
 package zconnectcom.zutto.zconnectshophandle.UI.Activities.Misc;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,9 +40,15 @@ public class logIn extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        try {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        } catch (Exception e) {}
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        final SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        final SharedPreferences sharedpreferences = getSharedPreferences("Shop",MODE_PRIVATE);
+
         if (sharedpreferences.contains("ShopKey") && sharedpreferences.contains("ShopName")) {
             Intent intent = new Intent(logIn.this, home.class);
             intent.putExtra("ShopKey", sharedpreferences.getString("ShopKey", null));
@@ -48,6 +57,18 @@ public class logIn extends BaseActivity {
             startActivity(intent);
             finish();
         }
+        TextView addshop = (TextView) findViewById(R.id.newShop);
+        addshop.setPaintFlags(addshop.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
+        addshop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(logIn.this, AddShop.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         logInButton = (Button) findViewById(R.id.login);
         shopCode = (EditText) findViewById(R.id.shopcode);
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Shop/Shopkeepers");
@@ -73,6 +94,7 @@ public class logIn extends BaseActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+                        @SuppressLint("ApplySharedPref")
                         @Override
                         public void onDataChange(final DataSnapshot dataSnapshot) {
                             //Auth
@@ -85,9 +107,16 @@ public class logIn extends BaseActivity {
                                     }
                                 }, 6000);
                                 Intent loginIntent = new Intent(logIn.this, home.class);
+                                SharedPreferences.Editor editor = getSharedPreferences("Shop",MODE_PRIVATE).edit();
+                                final String key = dataSnapshot.child(code).child("Key").getValue().toString();
+                                final String name = dataSnapshot.child(code).child("Name").getValue().toString();
+
+                                editor.putString("ShopKey",key);
+                                editor.putString("ShopName",name);
+                                editor.commit();
                                 Log.d("key", dataSnapshot.child(code).child("Key").getValue().toString());
-                                loginIntent.putExtra("ShopKey", dataSnapshot.child(code).child("Key").getValue().toString());
-                                loginIntent.putExtra("ShopName", (dataSnapshot.child(code).child("Name").getValue()).toString());
+                                loginIntent.putExtra("ShopKey",key );
+                                loginIntent.putExtra("ShopName",name);
                                 loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 hideProgressDialog();
                                 startActivity(loginIntent);
