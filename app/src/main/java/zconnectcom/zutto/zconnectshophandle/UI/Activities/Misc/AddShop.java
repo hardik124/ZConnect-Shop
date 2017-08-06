@@ -145,8 +145,6 @@ public class AddShop extends BaseActivity {
                     try {
                         DatabaseReference ref = mDatabaseUsers.child(code);
                         DatabaseReference refShop = mDatabaseUsers.getParent().child("Shops").push();
-                        refShop.child("name").setValue(name);
-
                         ref.child("Key").setValue(refShop.getKey());
                         ref.child("Name").setValue(name);
 
