@@ -72,6 +72,7 @@ public class ShopDetails extends BaseActivity {
         extras = getIntent().getExtras();
         ShopKey = extras.getString("ShopKey");
         setToolbar();
+        item.setShopid(ShopKey);
         setTitle(extras.getString("ShopName") + "- Edit Details");
         showBackButton();
 
@@ -190,7 +191,7 @@ public class ShopDetails extends BaseActivity {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        hideProgressDialog();
                     }
                 });
             }
@@ -336,6 +337,7 @@ public class ShopDetails extends BaseActivity {
             item.setDetails(details.getText().toString());
             item.setCode(et_code.getText().toString());
             item.setCouponTitle(et_title.getText().toString());
+
 
             if(TextUtils.isEmpty(item.getCat()))
             {

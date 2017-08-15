@@ -141,10 +141,10 @@ public class AddShop extends BaseActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-
                     try {
                         DatabaseReference ref = mDatabaseUsers.child(code);
                         DatabaseReference refShop = mDatabaseUsers.getParent().child("Shops").push();
+
                         ref.child("Key").setValue(refShop.getKey());
                         ref.child("Name").setValue(name);
 

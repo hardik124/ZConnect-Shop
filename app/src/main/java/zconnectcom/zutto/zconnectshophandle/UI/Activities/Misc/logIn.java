@@ -98,14 +98,15 @@ public class logIn extends BaseActivity {
                         @Override
                         public void onDataChange(final DataSnapshot dataSnapshot) {
                             //Auth
-                            if (dataSnapshot.hasChild(code)) {
 
+                            if (dataSnapshot.hasChild(code)) {
                                 new Timer().schedule(new TimerTask() {
                                     public void run() {
                                         hideProgressDialog();
                                         showSnack("Connection timeout");
                                     }
                                 }, 6000);
+
                                 Intent loginIntent = new Intent(logIn.this, home.class);
                                 SharedPreferences.Editor editor = getSharedPreferences("Shop",MODE_PRIVATE).edit();
                                 final String key = dataSnapshot.child(code).child("Key").getValue().toString();

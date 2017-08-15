@@ -66,16 +66,18 @@ public class CouponViewHolder extends RecyclerView.ViewHolder {
     {
         (mView.findViewById(R.id.content)).setVisibility(View.INVISIBLE);
         (mView.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-        ImageView imageView = ((ImageView) mView.findViewById(R.id.offerImage));
+        final ImageView imageView = ((ImageView) mView.findViewById(R.id.offerImage));
         Picasso.with(mView.getContext()).load(url).into(imageView, new Callback() {
             @Override
             public void onSuccess() {
                 (mView.findViewById(R.id.content)).setVisibility(View.VISIBLE);
-                (mView.findViewById(R.id.progressBar)).setVisibility(View.INVISIBLE);
+                (mView.findViewById(R.id.progressBar)).setVisibility(View.GONE);
             }
 
             @Override
             public void onError() {
+                imageView.setImageResource(R.drawable.ic_card_giftcard_black_24dp);
+                (mView.findViewById(R.id.progressBar)).setVisibility(View.GONE);
 
             }
         });
