@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.location.places.Place;
@@ -58,6 +60,7 @@ import zconnectcom.zutto.zconnectshophandle.models.ShopDetailsItem;
 public class ShopDetails extends BaseActivity {
     private final int GALLERY_REQUEST = 7;
     private EditText name, details, number, address, et_code, et_title;
+    private Button category;
     private ImageView image;
     private ShopDetailsItem item = new ShopDetailsItem();
     private String ShopKey;
@@ -162,7 +165,7 @@ public class ShopDetails extends BaseActivity {
             }
         });
 
-        final Button category = (Button) findViewById(R.id.category);
+        category = (Button) findViewById(R.id.category);
 
         category.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,11 +232,17 @@ public class ShopDetails extends BaseActivity {
 
         number.setPaintFlags(number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         number.setText(item.getNumber());
+
+        number.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+
         address.setText(item.getAddress());
         name.setText(item.getName());
         et_code.setText(item.getCode());
         details.setText(item.getDetails());
         et_title.setText(item.getCouponTitle());
+        if(!TextUtils.isEmpty(item.getCat()))
+            category.setText(item.getCat());
+
 
         if(URLUtil.isValidUrl(item.getImageurl())) {
             Picasso.with(ShopDetails.this).load(item.getImageurl()).into(image, new Callback() {
@@ -348,6 +357,10 @@ public class ShopDetails extends BaseActivity {
 
             {
                 showSnack("Please enter name");
+                return;
+            }
+            else if(TextUtils.isEmpty(item.getNumber())||TextUtils.isEmpty(item.getAddress())||TextUtils.isEmpty(item.getDetails())) {
+                showSnack("Fields are empty");
                 return;
             }
 

@@ -1,4 +1,4 @@
-package zconnectcom.zutto.zconnectshophandle.UI.Activities.ShopDetails;
+package zconnectcom.zutto.zconnectshophandle.Utils;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
